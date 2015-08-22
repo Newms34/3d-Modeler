@@ -1,0 +1,84 @@
+.numInp {
+    width: 70px;
+}
+
+#main {
+    transform-style: preserve-3d;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1%;
+    height: 1%;
+    transform-origin: 50% 50%;
+    z-index: -99;
+}
+
+.circleContainer {
+    transform-style: preserve-3d;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+}
+
+.circlePiece {
+    transform-style: preserve-3d;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    background: #bbb;
+}
+
+.boxContainer {
+    transform-style: preserve-3d;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.boxPiece {
+    transform-style: preserve-3d;
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    background: #bbb;
+}
+
+.treeEl {
+    /*width: 100%;*/
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.treeEl::before {
+    content: '\2514 ';
+    font-size: x-large;
+    vertical-align: top;
+}
+
+.treeEl:hover {
+    background-color: rgba(120, 120, 255, .6);
+}
+
+#mainTree {
+    width: 100%;
+}
+
+.delEm {
+    margin: 2px;
+}
+
+.panelBg {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+textarea {
+    width: 300px;
+    height: 200px;
+}

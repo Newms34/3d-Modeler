@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>tree!</title>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='tree.css' />
+</head>
+
+<body>
+    <div ng-app='treeTest' ng-controller='MainController'>
+        <div id='toggleAdd' ng-click='toggleWind(0);' class='btn btn-success'>&#9998;ADD AN OBJECT</div>
+        <div id='toggleRem' ng-click='toggleWind(1);' class='btn btn-warning'>&#127796;VIEW TREE/REMOVE</div>
+        <div id='save' ng-click='encodeSave();' class='btn btn-primary'>&#128190;SAVE SCENE</div>
+        <div id='load' ng-click='showLoad();' class='btn btn-info'>&#128194;LOAD SCENE</div>
+        <br/>Enable movement?:
+        <input type='checkbox' ng-model='moveEm' />
+        <div id='addObjForm' class='panel panel-success panelBg' ng-if='adding'>
+            <div class='panel-heading'>Add your object!</div>
+            <div class='panel-body'>
+                <div class='col-md-offset-4 col-md-4'>
+                    <form class='form-horizontal' role='form' ng-submit='makeObj(objForm)'>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email">Parent:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="parentEl" ng-model='objForm.parent' required>
+                                    <option ng-repeat='parName in parentList' value='{{parName.selector}}'>{{parName.selector}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="objName">Name of your new Object:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="objName" placeholder="Enter a name" ng-model='objForm.idInfo' ng-change='checkUnUsed(objForm.idInfo)' required>
+                                <div class="alert alert-danger" ng-if='nameConf'>
+                                    <strong>Uh oh!</strong> This name's already taken!
+                                </div>
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">{{isCube}}
+                                    <label>
+                                        <input type="checkbox" ng-model='objForm.isCube'>This object is a cube</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Position:</label>
+                            <div class="col-md-2">x:
+                                <input type="number" value='0' class='numInp' id="x" ng-model='objForm.x' step='0.05' required/>y:
+                                <input type="number" value='0' class='numInp' id="y" ng-model='objForm.y' step='0.05' required/>
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group" ng-if='objForm.isCube'>
+                            <label class="control-label col-sm-2" for="d">Depth:</label>
+                            <div class="col-md-2">
+                                <input type="number" value='0' class='numInp' id="d" ng-model='objForm.d' step='0.05' />
+                            </div>
+                        </div>
+                        <div class="form-group" ng-if='objForm.isCube'>
+                            <label class="control-label col-sm-2" for="radWidW">Width:</label>
+                            <div class="col-md-2">
+                                <input type="number" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' step='0.05' />
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group" ng-if='!objForm.isCube'>
+                            <label class="control-label col-sm-2" for="radWidR">Radius:</label>
+                            <div class="col-md-2">
+                                <input type="number" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' step='0.05' />
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="h">Height:</label>
+                            <div class="col-md-2">
+                                <input type="number" value='0' class='numInp' id="h" ng-model='objForm.h' step='0.05' required/>
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Rotation :</label>
+                            <div class="col-md-2">x:
+                                <input type="number" value='0' class='numInp' id="rX" ng-model='objForm.rX' step='0.05' required/>y:
+                                <input type="number" value='0' class='numInp' id="rY" ng-model='objForm.rY' step='0.05' required/>z:
+                                <input type="number" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' step='0.05' required/>
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group" style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%)'>
+                            <label class="control-label col-sm-2" style='background-color:#fff;margin-top:5px;'>Base Color :</label>
+                            <div class="col-md-4" style='background-color:#fff'>hue:
+                                <input type="range" value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol()' placeholder='0' required/>sat:
+                                <input type="range" value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol()' required/>val:
+                                <input type="range" value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol()' required/>
+                            </div>
+                        </div>
+                        <!---ele-->
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" id='makeButt' class="btn btn-success">Make it!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id='remObjForm' class='panel panel-warning panelBg' ng-show='rem'>
+            <div class='panel-heading'>Scene Tree</div>
+            <div class='panel-body'>
+                <div id='mainTree'></div>
+            </div>
+        </div>
+        <div id='loadForm' class='panel panel-info panelBg' ng-if='loading'>
+            <div class='panel-heading'>Load a Scene</div>
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="h">Enter a scene to load!:</label>
+                    <div class="col-md-2">
+                        <textarea id="loadBox" ng-model='loadTxt' ng-keyup='enterLoad($event);' ></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='saveForm' class='panel panel-success panelBg' ng-show='saving'>
+            <div class='panel-heading'>Save a Scene</div>
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="h">Copy the code below!</label>
+                    <div class="col-md-2">
+                        <textarea id="loadBox" ng-model='saveTxt' readonly>TEST</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='main'></div>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+        <script src='bootbox.min.js'></script>
+        <script src='tree.js'></script>
+    </div>
+</body>
+
+</html>
