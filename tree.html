@@ -24,7 +24,7 @@
                             <label class="control-label col-sm-2" for="email">Parent:</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="parentEl" ng-model='objForm.parent' required>
-                                    <option ng-repeat='parName in parentList' value='{{parName.selector}}'>{{parName.selector}}</option>
+                                    <option ng-repeat='parName in parentList' value='{{parName.selector}}' ng-selected='parName.selector="#main"'>{{parName.selector}}</option>
                                 </select>
                             </div>
                         </div>
