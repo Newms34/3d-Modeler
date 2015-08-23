@@ -35,22 +35,23 @@ app.controller("MainController", function($scope, $window, $compile) {
 
     }
     $scope.objs = [];
-    $scope.objs = [{
-        idInfo: "circParentderp1",
-        par: '#main'
-    }, {
-        idInfo: "circParentderp2",
-        par: '#main'
-    }, {
-        idInfo: "circParentbeans1",
-        par: '#circParentderp1'
-    }, {
-        idInfo: "circParentbeans2",
-        par: '#circParentderp1'
-    }, {
-        idInfo: "circParentmeh",
-        par: '#circParentbeans2'
-    }]
+    //uncomment the following for testing
+    // $scope.objs = [{
+    //     idInfo: "circParentderp1",
+    //     par: '#main'
+    // }, {
+    //     idInfo: "circParentderp2",
+    //     par: '#main'
+    // }, {
+    //     idInfo: "circParentbeans1",
+    //     par: '#circParentderp1'
+    // }, {
+    //     idInfo: "circParentbeans2",
+    //     par: '#circParentderp1'
+    // }, {
+    //     idInfo: "circParentmeh",
+    //     par: '#circParentbeans2'
+    // }]
 
     $scope.parentList = []; //list of parent objects
     $scope.parentList.push($('#main'));
