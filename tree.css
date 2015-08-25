@@ -82,3 +82,23 @@ textarea {
     width: 300px;
     height: 200px;
 }
+#objImg{
+    width:50px;
+    height:50px;
+}
+.coneContainer {
+    transform-style: preserve-3d;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+}
+.conePiece {
+    transform-style: preserve-3d;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid black;
+    position: absolute;
+    transform-origin:50% 100%;
+}

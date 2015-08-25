@@ -1,11 +1,12 @@
 var app = angular.module("treeTest", []);
 
-app.controller("MainController", function($scope, $window, $compile) {
+app.controller("MainController", function($scope, $window, $compile, loadUnloadFact) {
     $scope.adding = false;
     $scope.moveEm = false;
     $scope.nameConf = false;
     $scope.loading = false; //loading window not shown
-    $scope.saving
+    $scope.saving = false;
+    $scope.rgb = 'rgb';
     $scope.rem = false;
     $scope.totals = {};
     $scope.saveTxt = '';
@@ -35,33 +36,26 @@ app.controller("MainController", function($scope, $window, $compile) {
 
     }
     $scope.objs = [];
-    //uncomment the following for testing
-    // $scope.objs = [{
-    //     idInfo: "circParentderp1",
-    //     par: '#main'
-    // }, {
-    //     idInfo: "circParentderp2",
-    //     par: '#main'
-    // }, {
-    //     idInfo: "circParentbeans1",
-    //     par: '#circParentderp1'
-    // }, {
-    //     idInfo: "circParentbeans2",
-    //     par: '#circParentderp1'
-    // }, {
-    //     idInfo: "circParentmeh",
-    //     par: '#circParentbeans2'
-    // }]
-
     $scope.parentList = []; //list of parent objects
     $scope.parentList.push($('#main'));
-    $scope.objForm = {};
-    $scope.objForm.color = {
-        "hue": 0.05,
-        "sat": 0.05,
-        "val": 0.05
-    }
-    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, isCube) {
+    $scope.objForm = {
+        objType: 0,
+        x: 0,
+        y: 0,
+        radWid: 0,
+        h: 0,
+        d: 0,
+        rX: 0,
+        rY: 0,
+        rZ: 0,
+        color: {
+            hue: 0,
+            sat: 0,
+            val: 0
+        }
+    };
+
+    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType) {
         //constructor for objects.
         this.x = x; //xpos
         this.y = y; //ypos
@@ -74,122 +68,82 @@ app.controller("MainController", function($scope, $window, $compile) {
         this.rZ = rZ; //yaw
         this.color = color; //color obj ({hue, sat, val})
         this.idInfo = idInfo; //obj's id
-        this.isCube = isCube; //boolean
+        this.objType = objType; //boolean
     }
     $scope.makeObj = function(frm) {
-        frm.d = frm.d || 0;
-        frm.idInfoObj = (frm.isCube ? 'boxParent' : 'circParent') + frm.idInfo;
-        $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfoObj, frm.isCube));
-        if (frm.isCube) {
-            //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
-            $scope.createCube(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
-        } else {
-            $scope.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
-        }
-        console.log('objs:', $scope.objs)
-    }
-    $scope.createCircle = function(x, y, r, h, p, rX, rY, rZ, color, idInfo) {
-        //this function creates a cylinder at position x,y
-        //with radius r, height h, and parent element with id p.
-        //the circle has default color 'color'(an hsl object), and is rotated
-        //along rX, rY, and rZ
-        //idInfo is any additional info that is passed along as id
-
-        //construct parent ele
-        var circCont = document.createElement('div');
-        circCont.className = 'circleContainer';
-        var id = 'circParent' + (idInfo || '');
-        circCont.id = id;
-        circCont.style.left = x + 'px';
-        circCont.style.top = y + 'px';
-        $(p).append(circCont);
-        //construct cylinder segs
-        for (var i = 0; i < 30; i++) {
-            var el = document.createElement('div');
-            el.className = 'circlePiece';
-            el.style.height = h + 'px';
-            //calculate width of each segment 
-            var width = Math.ceil((2 / 30) * Math.PI * r);
-            el.style.width = width + 1 + 'px';
-            //position
-            el.style.transform = 'rotateY(' + i * 12 + 'deg) translateZ(' + r + 'px)';
-            //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
-            var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
-            var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
-            console.log('col obj', color)
-            console.log('col for this', col, i, colCalc);
-            el.style.backgroundColor = col;
-            $('#' + circCont.id).append(el);
-        }
-        //now rotate parent ele.
-        $('#' + circCont.id).css('transform', 'rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) rotateZ(' + rZ + 'deg)');
-        $scope.parentList.push($('#' + id));
-        $scope.nameConf = false;
-        $scope.objForm = {};
-    }
-    $scope.createCube = function(x, y, w, h, d, p, rX, rY, rZ, color, idInfo) {
-        //creates a rectangular prism at position x,y
-        //width w, height h, depth d, rotation along all three axes rX, rY, rZ,  
-
-        //construct parent ele
-        var boxCont = document.createElement('div');
-        boxCont.className = 'boxContainer';
-        var id = 'boxParent' + (idInfo || '');
-        boxCont.id = id;
-        boxCont.style.left = x + 'px';
-        boxCont.style.top = y + 'px';
-        $(p).append(boxCont);
-        //construct cylinder segs
-        for (var i = 0; i < 6; i++) {
-            var el = document.createElement('figure');
-            el.className = 'boxPiece';
-            //each face gets its own special position and size data. How special.
-            if (i == 0) {
-                //top
-                el.style.top = ((h - d) / 2) + 'px';
-                el.style.width = w + 'px';
-                el.style.height = d + 'px';
-                el.style.transform = 'rotateX(90deg) translateZ(' + (h / 2) + 'px)';
-            } else if (i == 1) {
-                //bottom
-                el.style.top = ((h - d) / 2) + 'px';
-                el.style.width = w + 'px';
-                el.style.height = d + 'px';
-                el.style.transform = 'rotateX(-90deg) translateZ(' + (h / 2) + 'px)';
-            } else if (i == 2) {
-                //left
-                el.style.left = ((w - d) / 2) + 'px';
-                el.style.width = d + 'px';
-                el.style.height = h + 'px';
-                el.style.transform = 'rotateY(-90deg) translateZ(' + (w / 2) + 'px)';
-            } else if (i == 3) {
-                //right
-                el.style.left = ((w - d) / 2) + 'px';
-                el.style.width = d + 'px';
-                el.style.height = h + 'px';
-                el.style.transform = 'rotateY(90deg) translateZ(' + (w / 2) + 'px)';
-            } else if (i == 4) {
-                //front
-                el.style.width = w + 'px';
-                el.style.height = h + 'px';
-                el.style.transform = 'rotateX(0deg) translateZ(' + (d / 2) + 'px)';
+        if (frm.parent) {
+            frm.d = frm.d || 0;
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfoObj, frm.objType));
+            if (frm.objType == 0) {
+                //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
+                console.log('makin a cube')
+                var id = loadUnloadFact.createCube(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                $scope.parentList.push($('#' + id));
+                $scope.nameConf = false;
+                $scope.objForm = {
+                    objType: 0,
+                    x: 0,
+                    y: 0,
+                    radWid: 0,
+                    h: 0,
+                    d: 0,
+                    rX: 0,
+                    rY: 0,
+                    rZ: 0,
+                    color: {
+                        hue: 0,
+                        sat: 0,
+                        val: 0
+                    }
+                };
+            } else if (frm.objType == 1) {
+                console.log('makin a cyl')
+                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                $scope.parentList.push($('#' + id));
+                $scope.nameConf = false;
+                $scope.objForm = {
+                    objType: 0,
+                    x: 0,
+                    y: 0,
+                    radWid: 0,
+                    h: 0,
+                    d: 0,
+                    rX: 0,
+                    rY: 0,
+                    rZ: 0,
+                    color: {
+                        hue: 0,
+                        sat: 0,
+                        val: 0
+                    }
+                };
             } else {
-                //back
-                el.style.width = w + 'px';
-                el.style.height = h + 'px';
-                el.style.transform = 'rotateX(180deg) translateZ(' + (d / 2) + 'px)';
+                console.log('makin a cone')
+                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                $scope.parentList.push($('#' + id));
+                $scope.nameConf = false;
+                $scope.objForm = {
+                    objType: 0,
+                    x: 0,
+                    y: 0,
+                    radWid: 0,
+                    h: 0,
+                    d: 0,
+                    rX: 0,
+                    rY: 0,
+                    rZ: 0,
+                    color: {
+                        hue: 0,
+                        sat: 0,
+                        val: 0
+                    }
+                };
             }
-
-            //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
-            var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
-            var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
-            el.style.backgroundColor = col;
-            $('#' + id).append(el);
+            console.log('objs:', $scope.objs)
+            bootbox.alert('Made ' + frm.idInfo + ' object!');
+        } else {
+            bootbox.alert('Objects cannot be orphans! Please choose a parent!')
         }
-        //now rotate parent ele.
-        $('#' + id).css('transform', 'rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) rotateZ(' + rZ + 'deg)');
-        $scope.parentList.push($('#' + id));
-        $scope.objForm = {};
     }
     window.onmousemove = function(e) {
         if ($scope.moveEm) {
@@ -221,7 +175,7 @@ app.controller("MainController", function($scope, $window, $compile) {
         $scope.nameConf = false;
         $('#makeButt').removeAttr('disabled')
         for (var q = 0; q < $scope.objs.length; q++) {
-            if ($scope.objs[q].idInfo == ('circParent' + item) || $scope.objs[q].idInfo == ('boxParent' + item)) {
+            if ($scope.objs[q].idInfo == ('circParent' + item) || $scope.objs[q].idInfo == ('boxParent' + item) || $scope.objs[q].idInfo == ('coneParent' + item)) {
                 $scope.nameConf = true;
                 $('#makeButt').attr('disabled', 'true');
             }
@@ -301,7 +255,7 @@ app.controller("MainController", function($scope, $window, $compile) {
                     $('#main').html('');
                     $('#mainTree').html('');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
-                    // $scope.loadScene();
+                    $scope.loadScene();
                     $scope.showLoad();
                     $scope.$apply();
                 }
@@ -311,8 +265,6 @@ app.controller("MainController", function($scope, $window, $compile) {
                 $('#loadBox').val('').focus();
             });
         }
-
-
     }
     $scope.enterLoad = function(e) {
         if (e.keyCode == 13) {
