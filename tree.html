@@ -39,12 +39,24 @@
                         </div>
                         <!---ele-->
                         <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <div class="checkbox">{{isCube}}
-                                    <label>
-                                        <input type="checkbox" ng-model='objForm.isCube'>This object is a cube</label>
-                                </div>
-                            </div>
+                            <label class="control-label col-sm-2">Object Type</label>
+                            <!-- <div class="col-md-6"> -->
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType'> Cube
+                                        <br/>
+                                        <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' /> Cylinder
+                                        <br/>
+                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' /> Cone
+                                        <br/>
+                                    </td>
+                                    <td class='success' style='padding:5px;'>
+                                        <img src='fig{{objForm.objType}}.jpg' id='objImg' />
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- </div> -->
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2">Position:</label>
@@ -54,20 +66,20 @@
                             </div>
                         </div>
                         <!---ele-->
-                        <div class="form-group" ng-if='objForm.isCube'>
+                        <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="d">Depth:</label>
                             <div class="col-md-2">
                                 <input type="number" value='0' class='numInp' id="d" ng-model='objForm.d' step='0.05' />
                             </div>
                         </div>
-                        <div class="form-group" ng-if='objForm.isCube'>
+                        <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="radWidW">Width:</label>
                             <div class="col-md-2">
                                 <input type="number" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' step='0.05' />
                             </div>
                         </div>
                         <!---ele-->
-                        <div class="form-group" ng-if='!objForm.isCube'>
+                        <div class="form-group" ng-if='objForm.objType!=0'>
                             <label class="control-label col-sm-2" for="radWidR">Radius:</label>
                             <div class="col-md-2">
                                 <input type="number" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' step='0.05' />
@@ -89,13 +101,28 @@
                                 <input type="number" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' step='0.05' required/>
                             </div>
                         </div>
-                        <!---ele-->
+                        <!---rgb/hsv stuff-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Color Mode:</label>
+                            <div class="col-md-6">
+                                RGB:
+                                <input type="radio" value='rgb' class='numInp' id="rgbMode" ng-model='rgb' /> HSV:
+                                <input type="radio" value='hsv' class='numInp' id="hsvMode" ng-model='rgb' />
+                            </div>
+                        </div>
                         <div class="form-group" style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%)'>
                             <label class="control-label col-sm-2" style='background-color:#fff;margin-top:5px;'>Base Color :</label>
-                            <div class="col-md-4" style='background-color:#fff'>hue:
-                                <input type="range" value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol()' placeholder='0' required/>sat:
-                                <input type="range" value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol()' required/>val:
-                                <input type="range" value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol()' required/>
+                            <!--for hsv mode-->
+                            <div class="col-md-4" style='background-color:#fff' ng-show='rgb=="hsv"'>hue:
+                                <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol()' required/>sat:
+                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol()' required/>val:
+                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol()' required/>
+                            </div>
+                            <!--for rgb mode-->
+                            <div class="col-md-4" style='background-color:#fff' ng-show='rgb=="rgb"'>red:
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol()' required/>green:
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol()' required/>blue:
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol()' required/>
                             </div>
                         </div>
                         <!---ele-->
@@ -120,7 +147,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="h">Enter a scene to load!:</label>
                     <div class="col-md-2">
-                        <textarea id="loadBox" ng-model='loadTxt' ng-keyup='enterLoad($event);' ></textarea>
+                        <textarea id="loadBox" ng-model='loadTxt' ng-keyup='enterLoad($event);'></textarea>
                     </div>
                 </div>
             </div>
@@ -142,6 +169,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
         <script src='bootbox.min.js'></script>
         <script src='tree.js'></script>
+        <script src='loadUnloadFact.js'></script>
     </div>
 </body>
 
