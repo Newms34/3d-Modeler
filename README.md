@@ -1,5 +1,5 @@
 #CSS 3d Modeler
->A simple app that allows you to make cubes and cylinders (for now) using css 3d. Make a scene, and then send it to your friends!
+>A simple app that allows you to make cubes and cylinders and cones using css 3d. Make a scene, and then send it to your friends!
 ##Table of Contents:
 
  - [Explanation](#Explanation)
@@ -38,6 +38,11 @@
  Q: Why CSS/Angular? Why not ThreeJS?
  
  A: While it's true that ThreeJS and other JS libraries are pretty awesome, and can do most of the stuff I'm doing here easily, this is an experiment: what can we do with pure CSS?
+ 
+ ----
+ Q: Why no spheres? 
+ 
+ A: High-poly objects such as spheres are difficult to draw and require a lot of processor power. I may include them later, but for now, being nice requires I don't overwork your computers.
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);
