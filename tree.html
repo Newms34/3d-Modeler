@@ -15,10 +15,10 @@
         <div id='load' ng-click='showLoad();' class='btn btn-info'>&#128194;LOAD SCENE</div>
         <br/>Enable movement?:
         <input type='checkbox' ng-model='moveEm' />
-        <div id='addObjForm' class='panel panel-success panelBg' ng-if='adding'>
+        <div id='addObjForm' class='panel panel-success col-md-6 pull-right panelBg' ng-if='adding'>
             <div class='panel-heading'>Add your object!</div>
             <div class='panel-body'>
-                <div class='col-md-offset-4 col-md-4'>
+                <div class='col-md-offset-2 col-md-8'>
                     <form class='form-horizontal' role='form' ng-submit='makeObj(objForm)'>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="email">Parent:</label>
@@ -26,6 +26,7 @@
                                 <select class="form-control" id="parentEl" ng-model='objForm.parent' required>
                                     <option ng-repeat='parName in parentList' value='{{parName.selector}}' ng-selected='parName.selector=="#main"'>{{parName.selector}}</option>
                                 </select>
+                                {{objForm.parent}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -60,45 +61,45 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-2">Position:</label>
-                            <div class="col-md-2">x:
-                                <input type="number" value='0' class='numInp' id="x" ng-model='objForm.x' step='0.05' required/>y:
-                                <input type="number" value='0' class='numInp' id="y" ng-model='objForm.y' step='0.05' required/>
+                            <div class="col-md-8 pull-right">x: {{objForm.x}}
+                                <input type="range" value='0' class='numInp' id="x" ng-model='objForm.x' min='0' max='300' required/>y: {{objForm.y}}
+                                <input type="range" value='0' class='numInp' id="y" ng-model='objForm.y' min='0' max='300' required/>
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="d">Depth:</label>
-                            <div class="col-md-2">
-                                <input type="number" value='0' class='numInp' id="d" ng-model='objForm.d' step='0.05' />
+                            <div class="col-md-8 pull-right">{{objForm.d}}
+                                <input type="range" value='0' class='numInp' id="d" ng-model='objForm.d' min='0' max='300' />
                             </div>
                         </div>
                         <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="radWidW">Width:</label>
-                            <div class="col-md-2">
-                                <input type="number" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' step='0.05' />
+                            <div class="col-md-8 pull-right">{{objForm.radWid}}
+                                <input type="range" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' min='0' max='300' />
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group" ng-if='objForm.objType!=0'>
                             <label class="control-label col-sm-2" for="radWidR">Radius:</label>
-                            <div class="col-md-2">
-                                <input type="number" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' step='0.05' />
+                            <div class="col-md-8 pull-right">{{objForm.radWid}}
+                                <input type="range" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' min='0' max='300' />
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="h">Height:</label>
-                            <div class="col-md-2">
-                                <input type="number" value='0' class='numInp' id="h" ng-model='objForm.h' step='0.05' required/>
+                            <div class="col-md-8 pull-right">{{objForm.h}}
+                                <input type="range" value='0' class='numInp' id="h" ng-model='objForm.h' min='0' max='300' required/>
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group">
                             <label class="control-label col-sm-2">Rotation :</label>
-                            <div class="col-md-2">x:
-                                <input type="number" value='0' class='numInp' id="rX" ng-model='objForm.rX' step='0.05' required/>y:
-                                <input type="number" value='0' class='numInp' id="rY" ng-model='objForm.rY' step='0.05' required/>z:
-                                <input type="number" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' step='0.05' required/>
+                            <div class="col-md-8 pull-right">x: {{objForm.rX}}
+                                <input type="range" value='0' class='numInp' id="rX" ng-model='objForm.rX' min='0' max='300' required/>y: {{objForm.rY}}
+                                <input type="range" value='0' class='numInp' id="rY" ng-model='objForm.rY' min='0' max='300' required/>z: {{objForm.rZ}}
+                                <input type="range" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' min='0' max='300' required/>
                             </div>
                         </div>
                         <!---rgb/hsv stuff-->
@@ -111,15 +112,15 @@
                             </div>
                         </div>
                         <div class="form-group" style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%)'>
-                            <label class="control-label col-sm-2" style='background-color:#fff;margin-top:5px;'>Base Color :</label>
+                            <label class="control-label col-sm-3" style='background-color:#fff;margin-top:5px;'>Base Color</label>
                             <!--for hsv mode-->
-                            <div class="col-md-4" style='background-color:#fff' ng-show='rgb=="hsv"'>hue:
+                            <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='rgb=="hsv"'>hue:
                                 <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol()' required/>sat:
                                 <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol()' required/>val:
                                 <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol()' required/>
                             </div>
                             <!--for rgb mode-->
-                            <div class="col-md-4" style='background-color:#fff' ng-show='rgb=="rgb"'>red:
+                            <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='rgb=="rgb"'>red:
                                 <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol()' required/>green:
                                 <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol()' required/>blue:
                                 <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol()' required/>
@@ -128,20 +129,21 @@
                         <!---ele-->
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" id='makeButt' class="btn btn-success">Make it!</button>
+                                <button type='button' id='prevButt' class="btn btn-info" ng-click='togglePreviewMode(objForm);'>&#128269; See it!</button>
+                                <button type="submit" id='makeButt' class="btn btn-success">&#10133; Make it!</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div id='remObjForm' class='panel panel-warning panelBg' ng-show='rem'>
+        <div id='remObjForm' class='panel panel-warning col-md-6 pull-right panelBg' ng-show='rem'>
             <div class='panel-heading'>Scene Tree</div>
             <div class='panel-body'>
                 <div id='mainTree'></div>
             </div>
         </div>
-        <div id='loadForm' class='panel panel-info panelBg' ng-if='loading'>
+        <div id='loadForm' class='panel panel-info col-md-6 pull-right panelBg' ng-if='loading'>
             <div class='panel-heading'>Load a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">
@@ -152,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div id='saveForm' class='panel panel-success panelBg' ng-show='saving'>
+        <div id='saveForm' class='panel panel-success col-md-6 pull-right panelBg' ng-show='saving'>
             <div class='panel-heading'>Save a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">

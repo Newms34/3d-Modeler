@@ -6,10 +6,11 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.nameConf = false;
     $scope.loading = false; //loading window not shown
     $scope.saving = false;
-    $scope.rgb = 'rgb';
+    $scope.rgb = 'hsv';
     $scope.rem = false;
     $scope.totals = {};
     $scope.saveTxt = '';
+    $scope.prevMode = false;
     $scope.toggleWind = function(which) {
         if (!which) {
             //show add form
@@ -26,7 +27,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.totals = {};
             $scope.scanForKids('main');
             $scope.rem ? $scope.rem = false : $scope.rem = true;
-            console.log('whole tree', $scope.objs)
             if ($scope.rem) {
                 $scope.drawTree('main');
             } else {
@@ -39,6 +39,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.parentList = []; //list of parent objects
     $scope.parentList.push($('#main'));
     $scope.objForm = {
+        parent: '#main',
         objType: 0,
         x: 0,
         y: 0,
@@ -70,10 +71,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.idInfo = idInfo; //obj's id
         this.objType = objType; //boolean
     }
-    $scope.makeObj = function(frm) {
+    $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
             frm.d = frm.d || 0;
-            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfoObj, frm.objType));
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType));
             if (frm.objType == 0) {
                 //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
                 console.log('makin a cube')
@@ -81,6 +82,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
+                    parent: '#main',
                     objType: 0,
                     x: 0,
                     y: 0,
@@ -102,6 +104,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
+                    parent: '#main',
                     objType: 0,
                     x: 0,
                     y: 0,
@@ -123,6 +126,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
+                    parent: '#main',
                     objType: 0,
                     x: 0,
                     y: 0,
@@ -139,11 +143,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     }
                 };
             }
-            console.log('objs:', $scope.objs)
-            bootbox.alert('Made ' + frm.idInfo + ' object!');
+            if (!prev) {
+                bootbox.alert('Made ' + frm.idInfo + ' object!');
+            }
         } else {
             bootbox.alert('Objects cannot be orphans! Please choose a parent!')
         }
+        return frm;
     }
     window.onmousemove = function(e) {
         if ($scope.moveEm) {
@@ -173,16 +179,19 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.checkUnUsed = function(item) {
         //prevents two objects from having the same name 
         $scope.nameConf = false;
-        $('#makeButt').removeAttr('disabled')
+        $('#makeButt').removeAttr('disabled');
+        $('#prevButt').removeAttr('disabled')
         for (var q = 0; q < $scope.objs.length; q++) {
             if ($scope.objs[q].idInfo == ('circParent' + item) || $scope.objs[q].idInfo == ('boxParent' + item) || $scope.objs[q].idInfo == ('coneParent' + item)) {
                 $scope.nameConf = true;
                 $('#makeButt').attr('disabled', 'true');
+                $('#prevButt').attr('disabled', 'true');
             }
         }
         if (item == 'main') {
             $scope.nameConf = true;
             $('#makeButt').attr('disabled', 'true');
+            $('#prevButt').attr('disabled', 'true');
         }
     }
     $scope.drawTree = function(par) {
@@ -229,11 +238,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.encodeSave = function() {
         $scope.adding = false;
         $scope.rem = false;
-        $scope.saving = true;
         $scope.loading = false;
-        var saveOut = JSON.stringify($scope.objs);
-        saveOutEnc = window.btoa(saveOut);
-        $scope.saveTxt = saveOutEnc;
+        if (!$scope.saving) {
+            $scope.saving = true;
+            var saveOut = JSON.stringify($scope.objs);
+            saveOutEnc = window.btoa(saveOut);
+            $scope.saveTxt = saveOutEnc;
+        } else {
+            $scope.saving = false;
+        }
     }
     $scope.showLoad = function() {
         $scope.loading ? $scope.loading = false : $scope.loading = true;
@@ -291,5 +304,45 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.makeObj(toMake);
         });
     };
-
+    $scope.$watch("objForm", function(frmEd) {
+        $scope.editObj(frmEd)
+    }, true);
+    $scope.editObj = function(frmEd) {
+        if ($scope.prevMode && $scope.adding) {
+            //preview mode on, valid, and we're adding
+            console.log('form changed, and prev mode active! redrawing!', frmEd);
+            console.log($scope.objs[$scope.objs.length])
+            var delMe = $scope.objs.pop(); //remove item
+            var delObj = '';
+            if (delMe.objType == 0) {
+                delObj = '#boxParent' + delMe.idInfo;
+            } else if (delMe.objType == 1) {
+                delObj = '#circParent' + delMe.idInfo;
+            } else {
+                delObj = '#coneParent' + delMe.idInfo;
+            }
+            $(delObj).remove();
+            $scope.objForm = $scope.makeObj(frmEd,true);
+        }
+    }
+    $scope.togglePreviewMode = function(frm) {
+        if (frm.idInfo && frm.idInfo !== '' && !$scope.prevMode) {
+            $scope.prevMode = true;
+            $scope.objForm = $scope.makeObj(frm,true);
+        } else if ($scope.prevMode) {
+            var delMe = $scope.objs.pop(); //remove item
+            var delObj = '';
+            if (delMe.objType == 0) {
+                delObj = '#boxParent' + delMe.idInfo;
+            } else if (delMe.objType == 1) {
+                delObj = '#circParent' + delMe.idInfo;
+            } else {
+                delObj = '#coneParent' + delMe.idInfo;
+            }
+            $(delObj).remove();
+            $scope.prevMode = false;
+        } else {
+            bootbox.alert('You gotta name your object first before you can see it!')
+        }
+    }
 });
