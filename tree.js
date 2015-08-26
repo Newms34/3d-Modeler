@@ -230,8 +230,16 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         console.log('item is', item)
         for (var q = 0; q < $scope.objs.length; q++) {
             if ($scope.objs[i].idInfo == item) {
-                $scope.objs.splice(i, 1);
-                $('#' + idInfo).remove();
+                var remObj = $scope.objs.splice(i, 1);
+                var delObj = '';
+                if (remObj.objType == 0) {
+                    delObj = '#boxParent' + remObj.idInfo;
+                } else if (remObj.objType == 1) {
+                    delObj = '#circParent' + remObj.idInfo;
+                } else {
+                    delObj = '#coneParent' + remObj.idInfo;
+                }
+                $(delObj).remove();
             }
         }
     }
@@ -322,13 +330,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 delObj = '#coneParent' + delMe.idInfo;
             }
             $(delObj).remove();
-            $scope.objForm = $scope.makeObj(frmEd,true);
+            $scope.objForm = $scope.makeObj(frmEd, true);
         }
     }
     $scope.togglePreviewMode = function(frm) {
         if (frm.idInfo && frm.idInfo !== '' && !$scope.prevMode) {
             $scope.prevMode = true;
-            $scope.objForm = $scope.makeObj(frm,true);
+            $scope.objForm = $scope.makeObj(frm, true);
         } else if ($scope.prevMode) {
             var delMe = $scope.objs.pop(); //remove item
             var delObj = '';
