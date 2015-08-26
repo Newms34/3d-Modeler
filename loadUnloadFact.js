@@ -29,7 +29,6 @@ app.factory('loadUnloadFact', function($rootScope) {
                 var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
                 var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
                 el.style.backgroundColor = col;
-                console.log(circCont)
                 $('#' + circCont.id).append(el);
             }
             //now rotate parent ele.
@@ -129,12 +128,9 @@ app.factory('loadUnloadFact', function($rootScope) {
                 var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
                 var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
                 var segHeight = Math.ceil(Math.sqrt(Math.pow(h, 2) + Math.pow(r, 2)));
-                console.log(segHeight + 'px solid ' + col)
                 el.style.borderBottom = segHeight + 'px solid ' + col;
                 el.style.borderLeft = width + 1 + 'px solid transparent';
                 el.style.borderRight = width + 1 + 'px solid transparent';
-                console.log(el);
-                console.log(coneCont)
                 $('#' + coneCont.id).append(el);
             }
             //now rotate parent ele.

@@ -52,7 +52,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         color: {
             hue: 0,
             sat: 0,
-            val: 0
+            val: 0,
+            red: 0,
+            green: 0,
+            blue: 0
         }
     };
 
@@ -70,6 +73,36 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.color = color; //color obj ({hue, sat, val})
         this.idInfo = idInfo; //obj's id
         this.objType = objType; //boolean
+    }
+    $scope.maker = function(frm) {
+        //by the maker!
+        if (!$scope.prevMode) {
+            //normal creation mode. Preview not active
+            $scope.makeObj(frm);
+        } else {
+            $scope.nameConf = false;
+            $scope.objForm = {
+                parent: '#main',
+                objType: 0,
+                x: 0,
+                y: 0,
+                radWid: 0,
+                h: 0,
+                d: 0,
+                rX: 0,
+                rY: 0,
+                rZ: 0,
+                color: {
+                    hue: 0,
+                    sat: 0,
+                    val: 0,
+                    red: 0,
+                    green: 0,
+                    blue: 0
+                }
+            };
+            $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
+        }
     }
     $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
@@ -95,7 +128,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     color: {
                         hue: 0,
                         sat: 0,
-                        val: 0
+                        val: 0,
+                        red: 0,
+                        green: 0,
+                        blue: 0
                     }
                 };
             } else if (frm.objType == 1) {
@@ -117,7 +153,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     color: {
                         hue: 0,
                         sat: 0,
-                        val: 0
+                        val: 0,
+                        red: 0,
+                        green: 0,
+                        blue: 0
                     }
                 };
             } else {
@@ -139,7 +178,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     color: {
                         hue: 0,
                         sat: 0,
-                        val: 0
+                        val: 0,
+                        red: 0,
+                        green: 0,
+                        blue: 0
                     }
                 };
             }
@@ -231,6 +273,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         for (var q = 0; q < $scope.objs.length; q++) {
             if ($scope.objs[i].idInfo == item) {
                 var remObj = $scope.objs.splice(i, 1);
+                $scope.parentList.splice(i, 1);
                 var delObj = '';
                 if (remObj.objType == 0) {
                     delObj = '#boxParent' + remObj.idInfo;
@@ -318,9 +361,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.editObj = function(frmEd) {
         if ($scope.prevMode && $scope.adding) {
             //preview mode on, valid, and we're adding
-            console.log('form changed, and prev mode active! redrawing!', frmEd);
-            console.log($scope.objs[$scope.objs.length])
             var delMe = $scope.objs.pop(); //remove item
+            $scope.parentList.pop();
             var delObj = '';
             if (delMe.objType == 0) {
                 delObj = '#boxParent' + delMe.idInfo;
@@ -339,6 +381,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.objForm = $scope.makeObj(frm, true);
         } else if ($scope.prevMode) {
             var delMe = $scope.objs.pop(); //remove item
+            $scope.parentList.pop();
             var delObj = '';
             if (delMe.objType == 0) {
                 delObj = '#boxParent' + delMe.idInfo;
@@ -351,6 +394,85 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.prevMode = false;
         } else {
             bootbox.alert('You gotta name your object first before you can see it!')
+        }
+    }
+    //Thanks to http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion for this!
+    $scope.rgbToHsl = function(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0; // achromatic
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+        h *= 360;
+        s *= 100;
+        l *= 100;
+        return [h, s, l];
+    }
+    $scope.hslToRgb = function(h, s, l) {
+        var r, g, b;
+        h = h/360;
+        s = s/100;
+        l = l/100;
+
+        if (s == 0) {
+            r = g = b = l; // achromatic
+        } else {
+            var hue2rgb = function hue2rgb(p, q, t) {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+        r = Math.round(r*255);
+        g = Math.round(g*255);
+        b = Math.round(b*255);
+        return [r, g, b];
+    }
+    $scope.updateCol = function(isRgb) {
+        //first we make sure we're dealin with numbahs here, not lettahs
+
+        for (var key in $scope.objForm.color){
+            if ($scope.objForm.color.hasOwnProperty(key)){
+                $scope.objForm.color[key] = parseFloat($scope.objForm.color[key]);
+            }
+        }
+        if (isRgb==1) {
+            var cols = $scope.rgbToHsl($scope.objForm.color.red, $scope.objForm.color.green, $scope.objForm.color.blue)
+            $scope.objForm.color.hue = cols[0];
+            $scope.objForm.color.sat = cols[1];
+            $scope.objForm.color.val = cols[2];
+        } else {
+            var cols = $scope.hslToRgb($scope.objForm.color.hue, $scope.objForm.color.sat, $scope.objForm.color.val)
+            $scope.objForm.color.red = cols[0];
+            $scope.objForm.color.green = cols[1];
+            $scope.objForm.color.blue = cols[2];
         }
     }
 });

@@ -19,7 +19,7 @@
             <div class='panel-heading'>Add your object!</div>
             <div class='panel-body'>
                 <div class='col-md-offset-2 col-md-8'>
-                    <form class='form-horizontal' role='form' ng-submit='makeObj(objForm)'>
+                    <form class='form-horizontal' role='form' ng-submit='maker(objForm)'>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="email">Parent:</label>
                             <div class="col-sm-10">
@@ -104,7 +104,7 @@
                         </div>
                         <!---rgb/hsv stuff-->
                         <div class="form-group">
-                            <label class="control-label col-sm-2">Color Mode:</label>
+                            <label class="control-label col-sm-5">Color Mode:</label>
                             <div class="col-md-6">
                                 RGB:
                                 <input type="radio" value='rgb' class='numInp' id="rgbMode" ng-model='rgb' /> HSV:
@@ -115,15 +115,15 @@
                             <label class="control-label col-sm-3" style='background-color:#fff;margin-top:5px;'>Base Color</label>
                             <!--for hsv mode-->
                             <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='rgb=="hsv"'>hue:
-                                <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol()' required/>sat:
-                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol()' required/>val:
-                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol()' required/>
+                                <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol(0)' required/>sat:
+                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol(0)' required/>val:
+                                <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol(0)' required/>
                             </div>
                             <!--for rgb mode-->
                             <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='rgb=="rgb"'>red:
-                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol()' required/>green:
-                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol()' required/>blue:
-                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol()' required/>
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol(1)' required/>green:
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol(1)' required/>blue:
+                                <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol(1)' required/>
                             </div>
                         </div>
                         <!---ele-->
