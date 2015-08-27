@@ -62,44 +62,44 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">Position:</label>
                             <div class="col-md-8 pull-right">x: {{objForm.x}}
-                                <input type="range" value='0' class='numInp' id="x" ng-model='objForm.x' min='0' max='300' required/>y: {{objForm.y}}
-                                <input type="range" value='0' class='numInp' id="y" ng-model='objForm.y' min='0' max='300' required/>
+                                <input type="range" value='0' class='numInp' id="x" ng-model='objForm.x' min='-300' max='300' required/>y: {{objForm.y}}
+                                <input type="range" value='0' class='numInp' id="y" ng-model='objForm.y' min='-300' max='300' required/>
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="d">Depth:</label>
                             <div class="col-md-8 pull-right">{{objForm.d}}
-                                <input type="range" value='0' class='numInp' id="d" ng-model='objForm.d' min='0' max='300' />
+                                <input type="range" value='0' class='numInp' id="d" ng-model='objForm.d' min='0' max='500' />
                             </div>
                         </div>
                         <div class="form-group" ng-if='objForm.objType==0'>
                             <label class="control-label col-sm-2" for="radWidW">Width:</label>
                             <div class="col-md-8 pull-right">{{objForm.radWid}}
-                                <input type="range" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' min='0' max='300' />
+                                <input type="range" value='0' class='numInp' id="radWidW" ng-model='objForm.radWid' min='0' max='500' />
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group" ng-if='objForm.objType!=0'>
                             <label class="control-label col-sm-2" for="radWidR">Radius:</label>
                             <div class="col-md-8 pull-right">{{objForm.radWid}}
-                                <input type="range" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' min='0' max='300' />
+                                <input type="range" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' min='0' max='500' />
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="h">Height:</label>
                             <div class="col-md-8 pull-right">{{objForm.h}}
-                                <input type="range" value='0' class='numInp' id="h" ng-model='objForm.h' min='0' max='300' required/>
+                                <input type="range" value='0' class='numInp' id="h" ng-model='objForm.h' min='0' max='500' required/>
                             </div>
                         </div>
                         <!---ele-->
                         <div class="form-group">
                             <label class="control-label col-sm-2">Rotation :</label>
                             <div class="col-md-8 pull-right">x: {{objForm.rX}}
-                                <input type="range" value='0' class='numInp' id="rX" ng-model='objForm.rX' min='0' max='300' required/>y: {{objForm.rY}}
-                                <input type="range" value='0' class='numInp' id="rY" ng-model='objForm.rY' min='0' max='300' required/>z: {{objForm.rZ}}
-                                <input type="range" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' min='0' max='300' required/>
+                                <input type="range" value='0' class='numInp' id="rX" ng-model='objForm.rX' min='0' max='360' required/>y: {{objForm.rY}}
+                                <input type="range" value='0' class='numInp' id="rY" ng-model='objForm.rY' min='0' max='360' required/>z: {{objForm.rZ}}
+                                <input type="range" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' min='0' max='360' required/>
                             </div>
                         </div>
                         <!---rgb/hsv stuff-->

@@ -269,15 +269,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         })
     }
     $scope.delEl = function(item) {
-        console.log('item is', item)
+        item = item.substr(0,item.length-4)
         for (var q = 0; q < $scope.objs.length; q++) {
-            if ($scope.objs[i].idInfo == item) {
-                var remObj = $scope.objs.splice(i, 1);
-                $scope.parentList.splice(i, 1);
+            if ($scope.objs[q].idInfo == item) {
+                var remObj = $scope.objs.splice(q, 1)[0];
+                $scope.parentList.splice(q, 1);
                 var delObj = '';
-                if (remObj.objType == 0) {
+                if (parseInt(remObj.objType) == 0) {
                     delObj = '#boxParent' + remObj.idInfo;
-                } else if (remObj.objType == 1) {
+                } else if (parseInt(remObj.objType) == 1) {
                     delObj = '#circParent' + remObj.idInfo;
                 } else {
                     delObj = '#coneParent' + remObj.idInfo;
@@ -285,6 +285,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 $(delObj).remove();
             }
         }
+        $scope.drawTree('main');
+        
     }
     $scope.encodeSave = function() {
         $scope.adding = false;
@@ -350,7 +352,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 rZ: loadObj.rZ,
                 color: loadObj.color,
                 idInfo: loadObj.idInfo,
-                isCube: loadObj.isCube
+                objType: loadObj.objType
             }
             $scope.makeObj(toMake);
         });
