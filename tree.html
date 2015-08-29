@@ -45,11 +45,11 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType'> Cube
+                                        <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType' ng-change='coneSafe()'> Cube
                                         <br/>
-                                        <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' /> Cylinder
+                                        <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' ng-change='coneSafe()'/> Cylinder
                                         <br/>
-                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' /> Cone
+                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()'/> Cone
                                         <br/>
                                     </td>
                                     <td class='success' style='padding:5px;'>

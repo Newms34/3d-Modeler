@@ -421,7 +421,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
 
     $scope.updateCol = function(isRgb) {
         //first we make sure we're dealin with numbahs here, not lettahs
-
+        $('#colLab').css('background-image', 'none');
         for (var key in $scope.objForm.color) {
             if ($scope.objForm.color.hasOwnProperty(key) && key != 'img' && key != 'rgb') {
                 //convert all vals to number primitives, except for img/rgb
@@ -441,8 +441,11 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.objForm.color.blue = cols[2];
         }
     };
-    $scope.glow = function() {
-
+    $scope.coneSafe = function() {
+        //cones cannot accept textures! Q_Q
+        if ($scope.objForm.objType==2){
+            $scope.objForm.color.rgb = 'hsv';
+        }
     };
     $scope.updateImg = function() {
         var t = setTimeout(function() {
