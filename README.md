@@ -6,6 +6,7 @@
  - [Installation](#Installation)
  - [Use](#Use)
  - [FAQ](#FAQ)
+ - [Upcoming Features](#Upcoming-Features)
  - [Author](#Author)
 
 ##Explanation 
@@ -43,6 +44,12 @@
  Q: Why no spheres? 
  
  A: High-poly objects such as spheres are difficult to draw and require a lot of processor power. I may include them later, but for now, being nice requires I don't overwork your computers.
+
+##Upcoming Features
+ - New polyhedra: Pyramids, others!
+ - Better verification! 
+ - Alternate texture modes (image textures, transparency, glows).
+ - New 'animate mode': Click a button, and your mouse will switch from rotation mode to 'animate' mode!
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);
