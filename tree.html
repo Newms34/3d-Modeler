@@ -135,9 +135,11 @@
                                     <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol(1)' required/>blue:
                                     <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol(1)' required/>
                                 </div>
-                                <div class="col-md-8 pull-right" style='background-color:#fff'>
+                                <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb!="tex"'>
                                     Glow:
                                     <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05'/>
+                                    trans:
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05'/>
                                 </div>
                             </div>
                         </div>

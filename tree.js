@@ -56,6 +56,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             green: 0,
             blue: 0,
             gloPow: 0,
+                        trans:0,
             img: '',
             rgb:'hsv'
         }
@@ -102,6 +103,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     green: 0,
                     blue: 0,
                     gloPow: 0,
+                        trans:0,
                     img: '',
                     rgb: 'hsv'
                 }
@@ -138,6 +140,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
+                        trans:0,
                         img: '',
                         rgb: 'hsv'
                     }
@@ -166,6 +169,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
+                        trans:0,
                         img: '',
                         rgb: 'hsv'
                     }
@@ -194,6 +198,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
+                        trans:0,
                         img: '',
                         rgb: 'hsv'
                     }

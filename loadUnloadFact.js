@@ -1,11 +1,11 @@
 app.factory('loadUnloadFact', function($rootScope) {
     var colCalc = function(item, colInfo) {
-        console.log(colInfo)
         if (colInfo.rgb == 'rgb' || colInfo.rgb == 'hsv') {
             theShade = Math.floor(Math.abs(item - 15) + parseInt(colInfo.val));
-            return 'hsl(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%)';
+            theTrans = 1-(colInfo.trans/100);
+            console.log('hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,'+theTrans+')');
+            return 'hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,'+theTrans+')';
         } else{
-            console.log('url('+colInfo.img+')')
             return 'url('+colInfo.img+')';
         }
     };
