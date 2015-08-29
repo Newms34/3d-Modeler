@@ -1,4 +1,14 @@
 app.factory('loadUnloadFact', function($rootScope) {
+    var colCalc = function(item, colInfo) {
+        console.log(colInfo)
+        if (colInfo.rgb == 'rgb' || colInfo.rgb == 'hsv') {
+            theShade = Math.floor(Math.abs(item - 15) + parseInt(colInfo.val));
+            return 'hsl(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%)';
+        } else{
+            console.log('url('+colInfo.img+')')
+            return 'url('+colInfo.img+')';
+        }
+    };
     return {
         createCircle: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo) {
             //this function creates a cylinder at position x,y
@@ -26,9 +36,9 @@ app.factory('loadUnloadFact', function($rootScope) {
                 //position
                 el.style.transform = 'rotateY(' + i * 12 + 'deg) translateZ(' + r + 'px)';
                 //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
-                var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
-                var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
-                el.style.backgroundColor = col;
+                var col = colCalc(i, color);
+                el.style.background = col;
+                color.gloPow? el.style.boxShadow = '0 0 '+color.gloPow+'px '+col : el.style.boxShadow = 'none';
                 $('#' + circCont.id).append(el);
             }
             //now rotate parent ele.
@@ -87,10 +97,10 @@ app.factory('loadUnloadFact', function($rootScope) {
                     el.style.transform = 'rotateX(180deg) translateZ(' + (d / 2) + 'px)';
                 }
 
-                //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
-                var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
-                var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
-                el.style.backgroundColor = col;
+                //and finally color. this bit 'shades' the box so that it's easier to see that it's 3d.
+                var col = colCalc(i, color);
+                el.style.background = col;
+                color.gloPow? el.style.boxShadow = '0 0 '+color.gloPow+'px '+col : el.style.boxShadow = 'none';
                 $('#' + id).append(el);
             }
             //now rotate parent ele.
@@ -124,13 +134,13 @@ app.factory('loadUnloadFact', function($rootScope) {
                 //position, tilt
                 var segRot = Math.ceil(180 * Math.atan(r / h) / Math.PI);
                 el.style.transform = 'rotateY(' + i * 12 + 'deg) translateZ(' + r + 'px) rotateX(' + segRot + 'deg)';
-                //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
-                var colCalc = Math.floor(Math.abs(i - 15) + parseInt(color.val));
-                var col = 'hsl(' + color.hue + ',' + color.sat + '%,' + colCalc + '%)';
+                //and finally color. this bit 'shades' the cone so that it's easier to see that it's 3d.
+                var col = colCalc(i, color);
                 var segHeight = Math.ceil(Math.sqrt(Math.pow(h, 2) + Math.pow(r, 2)));
                 el.style.borderBottom = segHeight + 'px solid ' + col;
                 el.style.borderLeft = width + 1 + 'px solid transparent';
                 el.style.borderRight = width + 1 + 'px solid transparent';
+                el.style.boxShadow = 'none';
                 $('#' + coneCont.id).append(el);
             }
             //now rotate parent ele.

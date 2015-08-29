@@ -6,7 +6,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.nameConf = false;
     $scope.loading = false; //loading window not shown
     $scope.saving = false;
-    $scope.rgb = 'hsv';
     $scope.rem = false;
     $scope.totals = {};
     $scope.saveTxt = '';
@@ -55,7 +54,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             val: 0,
             red: 0,
             green: 0,
-            blue: 0
+            blue: 0,
+            gloPow: 0,
+            img: '',
+            rgb:'hsv'
         }
     };
 
@@ -70,7 +72,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.rX = rX; //pitch
         this.rY = rY; //roll
         this.rZ = rZ; //yaw
-        this.color = color; //color obj ({hue, sat, val})
+        this.color = color; //color obj ({hue, sat, val,red,green,blue,glow,img})
         this.idInfo = idInfo; //obj's id
         this.objType = objType; //boolean
     }
@@ -98,7 +100,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     val: 0,
                     red: 0,
                     green: 0,
-                    blue: 0
+                    blue: 0,
+                    gloPow: 0,
+                    img: '',
+                    rgb: 'hsv'
                 }
             };
             $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
@@ -131,7 +136,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         val: 0,
                         red: 0,
                         green: 0,
-                        blue: 0
+                        blue: 0,
+                        gloPow: 0,
+                        img: '',
+                        rgb: 'hsv'
                     }
                 };
             } else if (frm.objType == 1) {
@@ -156,7 +164,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         val: 0,
                         red: 0,
                         green: 0,
-                        blue: 0
+                        blue: 0,
+                        gloPow: 0,
+                        img: '',
+                        rgb: 'hsv'
                     }
                 };
             } else {
@@ -181,7 +192,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         val: 0,
                         red: 0,
                         green: 0,
-                        blue: 0
+                        blue: 0,
+                        gloPow: 0,
+                        img: '',
+                        rgb: 'hsv'
                     }
                 };
             }
@@ -269,7 +283,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         })
     }
     $scope.delEl = function(item) {
-        item = item.substr(0,item.length-4)
+        item = item.substr(0, item.length - 4)
         for (var q = 0; q < $scope.objs.length; q++) {
             if ($scope.objs[q].idInfo == item) {
                 var remObj = $scope.objs.splice(q, 1)[0];
@@ -286,7 +300,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             }
         }
         $scope.drawTree('main');
-        
+
     }
     $scope.encodeSave = function() {
         $scope.adding = false;
@@ -358,7 +372,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         });
     };
     $scope.$watch("objForm", function(frmEd) {
-        $scope.editObj(frmEd)
+        $scope.editObj(frmEd);
     }, true);
     $scope.editObj = function(frmEd) {
         if ($scope.prevMode && $scope.adding) {
@@ -399,17 +413,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
     };
     //Thanks to http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion for this!
-    
+
     $scope.updateCol = function(isRgb) {
         //first we make sure we're dealin with numbahs here, not lettahs
 
-        for (var key in $scope.objForm.color){
-            if ($scope.objForm.color.hasOwnProperty(key)){
+        for (var key in $scope.objForm.color) {
+            if ($scope.objForm.color.hasOwnProperty(key) && key != 'img' && key != 'rgb') {
+                //convert all vals to number primitives, except for img/rgb
                 $scope.objForm.color[key] = parseFloat($scope.objForm.color[key]);
             }
         }
 
-        if (isRgb==1) {
+        if (isRgb == 1) {
             var cols = loadUnloadFact.rgbToHsl($scope.objForm.color.red, $scope.objForm.color.green, $scope.objForm.color.blue)
             $scope.objForm.color.hue = cols[0];
             $scope.objForm.color.sat = cols[1];
@@ -420,5 +435,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.objForm.color.green = cols[1];
             $scope.objForm.color.blue = cols[2];
         }
-    }
+    };
+    $scope.glow = function() {
+
+    };
+    $scope.updateImg = function() {
+        var t = setTimeout(function() {
+            $('#colLab').css('background-image', 'url(' + $scope.objForm.color.img + ')');
+        }, 1000);
+    };
 });
