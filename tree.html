@@ -8,11 +8,12 @@
 </head>
 
 <body>
-    <div ng-app='treeTest' ng-controller='MainController'>
+    <div id ='all' ng-app='treeTest' ng-controller='MainController'>
         <div id='toggleAdd' ng-click='toggleWind(0);' class='btn btn-success'>&#9998;ADD AN OBJECT</div>
         <div id='toggleRem' ng-click='toggleWind(1);' class='btn btn-warning'>&#127796;VIEW TREE/REMOVE</div>
         <div id='save' ng-click='encodeSave();' class='btn btn-primary'>&#128190;SAVE SCENE</div>
         <div id='load' ng-click='showLoad();' class='btn btn-info'>&#128194;LOAD SCENE</div>
+        <div id='load' ng-click='showBg();' class='btn btn-default'>&#128506;SCENE OPTIONS</div>
         <br/>Enable movement?:
         <input type='checkbox' ng-model='moveEm' />
         <div id='addObjForm' class='panel panel-success col-md-6 pull-right panelBg' ng-if='adding'>
@@ -47,9 +48,9 @@
                                     <td>
                                         <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType' ng-change='coneSafe()'> Cube
                                         <br/>
-                                        <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' ng-change='coneSafe()'/> Cylinder
+                                        <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' ng-change='coneSafe()' /> Cylinder
                                         <br/>
-                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()'/> Cone
+                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()' /> Cone
                                         <br/>
                                     </td>
                                     <td class='success' style='padding:5px;'>
@@ -102,7 +103,6 @@
                                 <input type="range" value='0' class='numInp' id="rZ" ng-model='objForm.rZ' min='0' max='360' required/>
                             </div>
                         </div>
-
                         <!--cap stuff-->
                         <div class="form-group" ng-if='objForm.type!==0'>
                             <label class="control-label col-sm-4">Cap object?: </label>
@@ -110,7 +110,7 @@
                                 <input type="checkbox" value='0' class='numInp' id="isCap" ng-model='objForm.cap.isCapped' required/>
                             </div>
                             <label class="control-label col-sm-4" ng-if='objForm.cap.isCapped'>Cap Positions: {{objForm.cap.pos}}</label>
-                            <div class="col-md-8 pull-right"  ng-if='objForm.cap.isCapped'>
+                            <div class="col-md-8 pull-right" ng-if='objForm.cap.isCapped'>
                                 <input type="range" value='0' class='numInp' id="capPos" ng-model='objForm.cap.pos' min='-500' max='500' required/>
                             </div>
                         </div>
@@ -120,19 +120,25 @@
                                 <label class="control-label col-sm-5">Texture Mode:</label>
                                 <div class="col-md-6">
                                     <div class='col-md-6'>RGB:</div>
-                                    <div class='col-md-6'><input type="radio" value='rgb' class='numInp' id="rgbMode" ng-model='objForm.color.rgb' /></div>
-                                     <div class='col-md-6'>HSV:</div>
-                                    <div class='col-md-6'><input type="radio" value='hsv' class='numInp' id="hsvMode" ng-model='objForm.color.rgb' /></div>
+                                    <div class='col-md-6'>
+                                        <input type="radio" value='rgb' class='numInp' id="rgbMode" ng-model='objForm.color.rgb' />
+                                    </div>
+                                    <div class='col-md-6'>HSV:</div>
+                                    <div class='col-md-6'>
+                                        <input type="radio" value='hsv' class='numInp' id="hsvMode" ng-model='objForm.color.rgb' />
+                                    </div>
                                     <div class='col-md-6' ng-show='objForm.objType!=2'>Texture:</div>
-                                    <div class='col-md-6' ng-show='objForm.objType!=2'><input type="radio" value='tex' class='numInp' id="hsvMode" ng-model='objForm.color.rgb' /></div>
+                                    <div class='col-md-6' ng-show='objForm.objType!=2'>
+                                        <input type="radio" value='tex' class='numInp' id="texMode" ng-model='objForm.color.rgb' />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group" id = 'colLab' style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%);min-height:200px;'>
+                            <div class="form-group" id='colLab' style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%);min-height:200px;'>
                                 <label class="control-label col-sm-3" style='background-color:#fff;margin-top:5px;'>Color Lab</label>
                                 <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="tex"'>
                                     <div class="col-md-6">
                                         Texture:
-                                        <input type="text" placeholder='Enter an image url here!' class='' id="texture" ng-model='objForm.color.img' ng-change='updateImg()';/>
+                                        <input type="text" placeholder='Enter an image url here!' class='' id="texture" ng-model='objForm.color.img' ng-change='updateImg()' ;/>
                                     </div>
                                 </div>
                                 <!--for hsv mode-->
@@ -149,9 +155,8 @@
                                 </div>
                                 <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb!="tex"'>
                                     Glow:
-                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05'/>
-                                    trans:
-                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05'/>
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05' /> trans:
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05' />
                                 </div>
                             </div>
                         </div>
@@ -176,7 +181,7 @@
             <div class='panel-heading'>Load a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="h">Enter a scene to load!:</label>
+                    <label class="control-label col-sm-2" for="loadBox">Enter a scene to load!:</label>
                     <div class="col-md-2">
                         <textarea id="loadBox" ng-model='loadTxt' ng-keyup='enterLoad($event);'></textarea>
                     </div>
@@ -187,9 +192,93 @@
             <div class='panel-heading'>Save a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="h">Copy the code below!</label>
+                    <label class="control-label col-sm-2" for="loadBox">Copy the code here!</label>
                     <div class="col-md-2">
-                        <textarea id="loadBox" ng-model='saveTxt' readonly>TEST</textarea>
+                        <textarea id="saveBox" ng-model='saveTxt' readonly>ERROR</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='bgForm' class='panel panel-default col-md-6 pull-right panelBg' ng-show='bgShow'>
+            <div class='panel-heading'>Scene Options</div>
+            <div class='panel-body'>
+                <div class='form-group'>
+                    <div class="form-group">
+                        <label class="control-label col-sm-5">Background Mode:</label>
+                        <div class="col-md-6">
+                            <div class='col-md-6'>RGB:</div>
+                            <div class='col-md-6'>
+                                <input type="radio" value='rgb' class='numInp' id="rgbMode" ng-model='bgForm.rgb' />
+                            </div>
+                            <div class='col-md-6'>HSV:</div>
+                            <div class='col-md-6'>
+                                <input type="radio" value='hsv' class='numInp' id="hsvMode" ng-model='bgForm.rgb' />
+                            </div>
+                            <div class='col-md-6' ng-show='objForm.objType!=2'>Texture:</div>
+                            <div class='col-md-6' ng-show='objForm.objType!=2'>
+                                <input type="radio" value='tex' class='numInp' id="texMode" ng-model='bgForm.rgb' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" id='colLab' style='background-color:hsl({{bgForm.hue||0}},{{bgForm.sat||0}}%,{{bgForm.val||0}}%);min-height:200px;'>
+                        <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='bgForm.rgb=="tex"'>
+                            <div class="col-md-6">
+                                Texture:
+                                <input type="text" placeholder='Enter an image url here!' class='' id="texture" ng-model='bgForm.img' ng-change='updateImg(1)' ;/>
+                            </div>
+                        </div>
+                        <!--for hsv mode-->
+                        <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='bgForm.rgb=="hsv"'>hue:
+                            <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='bgForm.hue' step='0.05' ng-change='updateCol(0,1)' required/>sat:
+                            <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='bgForm.sat' step='0.05' ng-change='updateCol(0,1)' required/>val:
+                            <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='bgForm.val' step='0.05' ng-change='updateCol(0,1)' required/>
+                        </div>
+                        <!--for rgb mode-->
+                        <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='bgForm.rgb=="rgb"'>red:
+                            <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='bgForm.red' step='0.05' ng-change='updateCol(1,1)' required/>green:
+                            <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='bgForm.green' step='0.05' ng-change='updateCol(1,1)' required/>blue:
+                            <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='bgForm.blue' step='0.05' ng-change='updateCol(1)' required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12">Scene Filter:</label>
+                    <div class="col-md-6">
+                        <div class='col-md-6'>None:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='none' class='numInp' id="noFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Blur:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='blur' class='numInp' id="blurFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Sepia:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='sepia' class='numInp' id="sepFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Grayscale:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='grayscale' class='numInp' id="grayFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Saturate:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='saturate' class='numInp' id="satFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Brightness:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='brightness' class='numInp' id="briFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Contrast:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='contrast' class='numInp' id="conFilt" ng-model='bgForm.filter' />
+                        </div>
+                        <div class='col-md-6'>Hue-Rotate:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='hue-rotate' class='numInp' id="sepFilt" ng-model='bgForm.filter' />
+                        </div>
+                    </div>
+                    <div class="col-md-6 pull-right" style='background-color:#fff' ng-show='bgForm.filter!="none"'>Amount: {{bgForm.filtAmt}}
+                        <input type="range" ng-value='0' min='0' max='1' class='numInp' id="hue" ng-model='bgForm.filtAmt' step='0.05' ng-change='updateCol(0,1)' />
                     </div>
                 </div>
             </div>

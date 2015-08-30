@@ -7,21 +7,37 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.loading = false; //loading window not shown
     $scope.saving = false;
     $scope.rem = false;
+    $scope.bgShow = false;
     $scope.totals = {};
     $scope.saveTxt = '';
     $scope.prevMode = false;
+    $scope.bgForm = {
+        hue: 0,
+        sat: 0,
+        val: 100,
+        img: '',
+        rgb: 'hsv',
+        red: 255,
+        green: 255,
+        blue: 255,
+        filter: 'none',
+        filtAmt: 0
+    }
+    $scope.ackIe = false;
     $scope.toggleWind = function(which) {
         if (!which) {
             //show add form
             $('#mainTree').html('');
             $scope.rem = false;
             $scope.loading = false;
+            $scope.bgShow = false;
             $scope.saving = false;
             $scope.adding ? $scope.adding = false : $scope.adding = true;
         } else {
             //show tree/rem form
             $scope.adding = false;
             $scope.loading = false;
+            $scope.bgShow = false;
             $scope.saving = false;
             $scope.totals = {};
             $scope.scanForKids('main');
@@ -159,7 +175,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 };
             } else if (frm.objType == 1) {
                 console.log('makin a cyl')
-                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo,frm.cap);
+                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -192,7 +208,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 };
             } else {
                 console.log('makin a cone')
-                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo,frm.cap);
+                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -331,6 +347,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.adding = false;
         $scope.rem = false;
         $scope.loading = false;
+        $scope.bgShow = false;
         if (!$scope.saving) {
             $scope.saving = true;
             var saveOut = JSON.stringify($scope.objs);
@@ -345,6 +362,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.adding = false;
         $scope.rem = false;
         $scope.saving = false;
+        $scope.bgShow = false;
     }
     $scope.loadDecode = function(dataToLoad) {
         //NEED ERR CHECK TO MAKE SURE ARR!
@@ -438,9 +456,9 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     };
     //Thanks to http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion for this!
 
-    $scope.updateCol = function(isRgb) {
+    $scope.updateCol = function(isRgb, isBg) {
         //first we make sure we're dealin with numbahs here, not lettahs
-        $('#colLab').css('background-image', 'none');
+
         for (var key in $scope.objForm.color) {
             if ($scope.objForm.color.hasOwnProperty(key) && key != 'img' && key != 'rgb') {
                 //convert all vals to number primitives, except for img/rgb
@@ -449,16 +467,87 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
 
         if (isRgb == 1) {
-            var cols = loadUnloadFact.rgbToHsl($scope.objForm.color.red, $scope.objForm.color.green, $scope.objForm.color.blue)
-            $scope.objForm.color.hue = cols[0];
-            $scope.objForm.color.sat = cols[1];
-            $scope.objForm.color.val = cols[2];
+            if (!isBg) {
+                var cols = loadUnloadFact.rgbToHsl($scope.objForm.color.red, $scope.objForm.color.green, $scope.objForm.color.blue)
+                $scope.objForm.color.hue = cols[0];
+                $scope.objForm.color.sat = cols[1];
+                $scope.objForm.color.val = cols[2];
+            } else {
+                var cols = loadUnloadFact.rgbToHsl($scope.bgForm.red, $scope.bgForm.green, $scope.bgForm.blue)
+                $scope.bgForm.hue = cols[0];
+                $scope.bgForm.sat = cols[1];
+                $scope.bgForm.val = cols[2];
+            }
         } else {
-            var cols = loadUnloadFact.hslToRgb($scope.objForm.color.hue, $scope.objForm.color.sat, $scope.objForm.color.val)
-            $scope.objForm.color.red = cols[0];
-            $scope.objForm.color.green = cols[1];
-            $scope.objForm.color.blue = cols[2];
+            if (!isBg) {
+                var cols = loadUnloadFact.hslToRgb($scope.objForm.color.hue, $scope.objForm.color.sat, $scope.objForm.color.val)
+                $scope.objForm.color.red = cols[0];
+                $scope.objForm.color.green = cols[1];
+                $scope.objForm.color.blue = cols[2];
+            } else {
+                var cols = loadUnloadFact.hslToRgb($scope.bgForm.hue, $scope.bgForm.sat, $scope.bgForm.val)
+                $scope.bgForm.red = cols[0];
+                $scope.bgForm.green = cols[1];
+                $scope.bgForm.blue = cols[2];
+            }
         }
+        if (!isBg) {
+            $('#colLab').css('background-image', 'none');
+        } else {
+            //text col is opposite of bg col
+            /*vals for filt:
+            blur:*20
+            sepia:1
+            grayscale:1
+            sat:10
+            bright:10
+            contrast:10
+            hue-rot:360
+            */
+            var theFilt = '';
+            switch ($scope.bgForm.filter) {
+                case 'blur':
+                    theFilt = 'blur(' + $scope.bgForm.filtAmt * 20 + 'px)';
+                    break;
+                case 'sepia':
+                    theFilt = 'sepia(' + $scope.bgForm.filtAmt * 1 + ')';
+                    break;
+                case 'grayscale':
+                    theFilt = 'grayscale(' + $scope.bgForm.filtAmt * 1 + ')';
+                    break;
+                case 'saturate':
+                    theFilt = 'saturate(' + $scope.bgForm.filtAmt * 10 + ')';
+                    break;
+                case 'brightness':
+                    theFilt = 'brightness(' + $scope.bgForm.filtAmt * 10 + ')';
+                    break;
+                case 'contrast':
+                    theFilt = 'contrast(' + $scope.bgForm.filtAmt * 10 + ')';
+                    break;
+                case 'hue-rotate':
+                    theFilt = 'hue-rotate(' + $scope.bgForm.filtAmt * 360 + 'deg)';
+                    break;
+                default:
+                    theFilt = '';
+            }
+            console.log(theFilt);
+            if ($scope.bgForm.rgb != 'tex') {
+                $('#all').css({
+                    'background': 'hsl(' + $scope.bgForm.hue + ',' + $scope.bgForm.sat + '%,' + $scope.bgForm.val + '%)',
+                    'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
+                    '-webkit-filter': theFilt,
+                    'filter': theFilt,
+                });
+            }else{
+                $('#all').css({
+                    'background': 'url(' + $scope.bgForm.img + ')',
+                    'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
+                    '-webkit-filter': theFilt,
+                    'filter': theFilt,
+                });
+            }
+        }
+        console.log($scope.bgForm);
     };
     $scope.coneSafe = function() {
         //cones cannot accept textures! Q_Q
@@ -466,9 +555,26 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.objForm.color.rgb = 'hsv';
         }
     };
-    $scope.updateImg = function() {
+    $scope.updateImg = function(isBg) {
         var t = setTimeout(function() {
-            $('#colLab').css('background-image', 'url(' + $scope.objForm.color.img + ')');
+            if (isBg) {
+                $('#all').css('background-image', 'url(' + $scope.bgForm.img + ')');
+            } else {
+                $('#colLab').css('background-image', 'url(' + $scope.objForm.color.img + ')');
+            }
         }, 1000);
     };
+    $scope.showBg = function() {
+        $scope.loading = false;
+        $scope.bgShow ? $scope.bgShow = false : $scope.bgShow = true;
+        $scope.adding = false;
+        $scope.rem = false;
+        $scope.saving = false;
+
+        //show the following warning if user tries to access non-IE-compliant stuff
+        if ($scope.bgShow && !$scope.ackIe && window.navigator.userAgent.indexOf("MSIE ")>0){
+            bootbox.alert('It looks like you\'re using Internet Explorer! Some features aren\'t available in IE!')
+            $scope.ackIe = true;
+        }
+    }
 });
