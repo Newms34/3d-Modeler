@@ -56,9 +56,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             green: 0,
             blue: 0,
             gloPow: 0,
-                        trans:0,
+            trans: 0,
             img: '',
-            rgb:'hsv'
+            rgb: 'hsv'
+        },
+        cap: {
+            isCapped: true,
+            pos: 100
         }
     };
 
@@ -103,9 +107,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     green: 0,
                     blue: 0,
                     gloPow: 0,
-                        trans:0,
+                    trans: 0,
                     img: '',
                     rgb: 'hsv'
+                },
+                cap: {
+                    isCapped: true,
+                    pos: 100
                 }
             };
             $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
@@ -140,14 +148,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
-                        trans:0,
+                        trans: 0,
                         img: '',
                         rgb: 'hsv'
+                    },
+                    cap: {
+                        isCapped: true,
+                        pos: 100
                     }
                 };
             } else if (frm.objType == 1) {
                 console.log('makin a cyl')
-                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo,frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -169,14 +181,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
-                        trans:0,
+                        trans: 0,
                         img: '',
                         rgb: 'hsv'
+                    },
+                    cap: {
+                        isCapped: true,
+                        pos: 100
                     }
                 };
             } else {
                 console.log('makin a cone')
-                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo,frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -198,9 +214,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         green: 0,
                         blue: 0,
                         gloPow: 0,
-                        trans:0,
+                        trans: 0,
                         img: '',
                         rgb: 'hsv'
+                    },
+                    cap: {
+                        isCapped: true,
+                        pos: 100
                     }
                 };
             }
@@ -327,7 +347,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.saving = false;
     }
     $scope.loadDecode = function(dataToLoad) {
-        console.log(dataToLoad);
         //NEED ERR CHECK TO MAKE SURE ARR!
         var parsedStuff = [];
         try {
@@ -443,7 +462,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     };
     $scope.coneSafe = function() {
         //cones cannot accept textures! Q_Q
-        if ($scope.objForm.objType==2){
+        if ($scope.objForm.objType == 2) {
             $scope.objForm.color.rgb = 'hsv';
         }
     };

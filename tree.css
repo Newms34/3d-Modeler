@@ -12,7 +12,14 @@
     transform-origin: 50% 50%;
     z-index: -99;
 }
-
+.cap {
+    transform-style: preserve-3d;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    background: #bbb;
+    border-radius:50%;
+}
 .circleContainer {
     transform-style: preserve-3d;
     width: 5px;

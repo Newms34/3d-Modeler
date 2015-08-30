@@ -2,15 +2,37 @@ app.factory('loadUnloadFact', function($rootScope) {
     var colCalc = function(item, colInfo) {
         if (colInfo.rgb == 'rgb' || colInfo.rgb == 'hsv') {
             theShade = Math.floor(Math.abs(item - 15) + parseInt(colInfo.val));
-            theTrans = 1-(colInfo.trans/100);
-            console.log('hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,'+theTrans+')');
-            return 'hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,'+theTrans+')';
-        } else{
-            return 'url('+colInfo.img+')';
+            theTrans = 1 - (colInfo.trans / 100);
+            return 'hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,' + theTrans + ')';
+        } else {
+            return 'url(' + colInfo.img + ')';
+        }
+    };
+    var capSegs = function(type, color, p, r, pos, h) {
+        pos = parseInt(pos);
+        r = parseInt(r);
+        h = parseInt(h);
+        //type = 1 for cone, 2 for cyl
+        for (var q = 0; q < type; q++) {
+            var capEl = document.createElement('div');
+            capEl.className = 'cap';
+            capEl.style.height = 2 * r + 'px';
+            capEl.style.width = 2 * r + 'px';
+            var zTrans = 0;
+            if (q){
+                zTrans = pos-h;
+            } else {
+                zTrans = pos;
+            }
+            capEl.style.transform = 'rotateX(90deg) translateX(-45%) translateZ(' + zTrans + 'px)';
+            var col = colCalc(q, color);
+            capEl.style.background = col;
+            color.gloPow ? capEl.style.boxShadow = '0 0 ' + color.gloPow + 'px ' + col : capEl.style.boxShadow = 'none';
+            $('#' + p).append(capEl);
         }
     };
     return {
-        createCircle: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo) {
+        createCircle: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo, cap) {
             //this function creates a cylinder at position x,y
             //with radius r, height h, and parent element with id p.
             //the circle has default color 'color'(an hsl object), and is rotated
@@ -25,6 +47,10 @@ app.factory('loadUnloadFact', function($rootScope) {
             circCont.style.left = x + 'px';
             circCont.style.top = y + 'px';
             $(p).append(circCont);
+
+            if (cap.isCapped) {
+                capSegs(2, color, circCont.id, r, cap.pos,h);
+            }
             //construct cylinder segs
             for (var i = 0; i < 30; i++) {
                 var el = document.createElement('div');
@@ -38,9 +64,10 @@ app.factory('loadUnloadFact', function($rootScope) {
                 //and finally color. this bit 'shades' the cylinder so that it's easier to see that it's 3d.
                 var col = colCalc(i, color);
                 el.style.background = col;
-                color.gloPow? el.style.boxShadow = '0 0 '+color.gloPow+'px '+col : el.style.boxShadow = 'none';
+                color.gloPow ? el.style.boxShadow = '0 0 ' + color.gloPow + 'px ' + col : el.style.boxShadow = 'none';
                 $('#' + circCont.id).append(el);
             }
+
             //now rotate parent ele.
             $('#' + circCont.id).css('transform', 'rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) rotateZ(' + rZ + 'deg)');
             return id;
@@ -100,14 +127,14 @@ app.factory('loadUnloadFact', function($rootScope) {
                 //and finally color. this bit 'shades' the box so that it's easier to see that it's 3d.
                 var col = colCalc(i, color);
                 el.style.background = col;
-                color.gloPow? el.style.boxShadow = '0 0 '+color.gloPow+'px '+col : el.style.boxShadow = 'none';
+                color.gloPow ? el.style.boxShadow = '0 0 ' + color.gloPow + 'px ' + col : el.style.boxShadow = 'none';
                 $('#' + id).append(el);
             }
             //now rotate parent ele.
             $('#' + id).css('transform', 'rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) rotateZ(' + rZ + 'deg)');
             return id;
         },
-        createCone: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo) {
+        createCone: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo, cap) {
 
             //this function creates a cone at position x,y
             //with radius r, height h, and parent element with id p.
@@ -118,12 +145,14 @@ app.factory('loadUnloadFact', function($rootScope) {
             //construct parent ele
             var coneCont = document.createElement('div');
             coneCont.className = 'coneContainer';
-            console.log(idInfo)
             var id = 'coneParent' + (idInfo || '');
             coneCont.id = id;
             coneCont.style.left = x + 'px';
             coneCont.style.top = y + 'px';
             $(p).append(coneCont);
+            if (cap.isCapped) {
+                capSegs(1, color, coneCont.id, r, cap.pos,h);
+            }
             //construct cone segs
             for (var i = 0; i < 30; i++) {
                 var el = document.createElement('div');
