@@ -53,7 +53,7 @@
 ##Upcoming Features
  - New polyhedra: Pyramids, others!
  - Better verification! 
- - ~~Alternate texture modes (image textures, transparency, glows).~~Nevermind! That's done!
+ - Backgrounds included in loaded scenes!
  - New 'animate mode': Click a button, and your mouse will switch from rotation mode to 'animate' mode!
  
 ##Author 
