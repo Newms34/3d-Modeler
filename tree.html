@@ -32,12 +32,11 @@
                                 <select class="form-control" id="parentEl" ng-model='objForm.parent' required>
                                     <option ng-repeat='parName in parentList' value='{{parName.selector}}' ng-selected='parName.selector=="#main"'>{{parName.selector}}</option>
                                 </select>
-                                {{objForm.parent}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="objName">Name of your new Object:</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-8">
                                 <input type="text" class="form-control" id="objName" placeholder="Enter a name" ng-model='objForm.idInfo' ng-change='checkUnUsed(objForm.idInfo)' required>
                                 <div class="alert alert-danger" ng-if='nameConf'>
                                     <strong>Uh oh!</strong> This name's already taken!
@@ -147,20 +146,20 @@
                                     </div>
                                 </div>
                                 <!--for hsv mode-->
-                                <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="hsv"'>hue:
-                                    <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='objForm.color.hue' step='0.05' ng-change='updateCol(0)' required/>sat:
-                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol(0)' required/>val:
+                                <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="hsv"'>Hue:
+                                    <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" class='hue' ng-model='objForm.color.hue' step='0.05' ng-change='updateCol(0)' required/>Saturation:
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='objForm.color.sat' step='0.05' ng-change='updateCol(0)' required/>Value (Lightness):
                                     <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='objForm.color.val' step='0.05' ng-change='updateCol(0)' required/>
                                 </div>
                                 <!--for rgb mode-->
-                                <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="rgb"'>red:
-                                    <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol(1)' required/>green:
-                                    <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol(1)' required/>blue:
+                                <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="rgb"'>Red:
+                                    <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cred" ng-model='objForm.color.red' step='0.05' ng-change='updateCol(1)' required/>Green:
+                                    <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cgreen" ng-model='objForm.color.green' step='0.05' ng-change='updateCol(1)' required/>Blue:
                                     <input type="range" ng-value='0' min='0' max='255' class='numInp' id="cblue" ng-model='objForm.color.blue' step='0.05' ng-change='updateCol(1)' required/>
                                 </div>
                                 <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb!="tex"'>
                                     Glow:
-                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05' /> trans:
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05' /> Transparency:
                                     <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05' /> Shininess:
                                     <input type="range" ng-value='1' min='0' max='3' class='numInp' id="cspec" ng-model='objForm.color.spec' step='0.05' />
                                 </div>
@@ -241,7 +240,7 @@
                         </div>
                         <!--for hsv mode-->
                         <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='bgForm.rgb=="hsv"'>hue:
-                            <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" ng-model='bgForm.hue' step='0.05' ng-change='updateCol(0,1)' required/>sat:
+                            <input type="range" ng-value='0' min='0' max='360' class='numInp' id="hue" class='hue' ng-model='bgForm.hue' step='0.05' ng-change='updateCol(0,1)' required/>sat:
                             <input type="range" ng-value='0' min='0' max='100' class='numInp' id="sat" ng-model='bgForm.sat' step='0.05' ng-change='updateCol(0,1)' required/>val:
                             <input type="range" ng-value='0' min='0' max='100' class='numInp' id="val" ng-model='bgForm.val' step='0.05' ng-change='updateCol(0,1)' required/>
                         </div>
