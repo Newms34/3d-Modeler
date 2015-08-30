@@ -6,6 +6,7 @@
  - [Installation](#Installation)
  - [Use](#Use)
  - [FAQ](#FAQ)
+ - [New Features](#New-Features)
  - [Upcoming Features](#Upcoming-Features)
  - [Author](#Author)
 
@@ -50,10 +51,17 @@
  
  A: Because of the way triangles are drawn with CSS (hint: it's already a bit of a trick), the triangles can't really have background textures. Sorry!
 
+##New Features
+ - Updated object textures. Objects materials can now glow, be transparent, be shiny, and have image textures (except for cones).
+ - Background texture options. No longer just have a boring plain-white background!
+ - Scene Filters! Give your entire scene a sepia tone, or play with the contrast!
+ - You can now name your scene.
+ - Backgrounds included in loaded scenes!
+ - Names included in loaded scenes!
+
 ##Upcoming Features
  - New polyhedra: Pyramids, others!
  - Better verification! 
- - Backgrounds included in loaded scenes!
  - New 'animate mode': Click a button, and your mouse will switch from rotation mode to 'animate' mode!
  
 ##Author 

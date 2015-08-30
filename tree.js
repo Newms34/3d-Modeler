@@ -1,4 +1,4 @@
-var app = angular.module("treeTest", []);
+var app = angular.module("modeler", []);
 
 app.controller("MainController", function($scope, $window, $compile, loadUnloadFact) {
     $scope.adding = false;
@@ -11,6 +11,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.totals = {};
     $scope.saveTxt = '';
     $scope.prevMode = false;
+    $scope.theTitle='';
     $scope.bgForm = {
         hue: 0,
         sat: 0,
@@ -74,7 +75,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             gloPow: 0,
             trans: 0,
             img: '',
-            rgb: 'hsv'
+            rgb: 'hsv',
+            spec: 1
         },
         cap: {
             isCapped: true,
@@ -97,6 +99,36 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.idInfo = idInfo; //obj's id
         this.objType = objType; //boolean
     }
+    $scope.announceDone = function(frm) {
+        if (frm.objType == 0) {
+            var type = 'cube '
+        } else if (frm.objType == 1) {
+            var type = 'cylinder '
+        } else {
+            var type = 'cone '
+        }
+        bootbox.dialog({
+            message: 'Made ' + type + frm.idInfo + '!',
+            title: 'Made ' + frm.idInfo + '!',
+            buttons: {
+                success: {
+                    label: "Make another!",
+                    className: "btn-success",
+                    callback: function() {
+
+                    }
+                },
+                info: {
+                    label: "Done for now!",
+                    className: "btn-info",
+                    callback: function() {
+                        $scope.adding = false;
+                        $scope.$digest();
+                    }
+                }
+            }
+        });
+    };
     $scope.maker = function(frm) {
         //by the maker!
         if (!$scope.prevMode) {
@@ -125,7 +157,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     gloPow: 0,
                     trans: 0,
                     img: '',
-                    rgb: 'hsv'
+                    rgb: 'hsv',
+                    spec: 1
                 },
                 cap: {
                     isCapped: true,
@@ -133,6 +166,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 }
             };
             $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
+            $scope.announceDone(frm);
         }
     }
     $scope.makeObj = function(frm, prev) {
@@ -166,7 +200,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         gloPow: 0,
                         trans: 0,
                         img: '',
-                        rgb: 'hsv'
+                        rgb: 'hsv',
+                        spec: 1
                     },
                     cap: {
                         isCapped: true,
@@ -199,7 +234,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         gloPow: 0,
                         trans: 0,
                         img: '',
-                        rgb: 'hsv'
+                        rgb: 'hsv',
+                        spec: 1
                     },
                     cap: {
                         isCapped: true,
@@ -232,7 +268,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         gloPow: 0,
                         trans: 0,
                         img: '',
-                        rgb: 'hsv'
+                        rgb: 'hsv',
+                        spec: 1
                     },
                     cap: {
                         isCapped: true,
@@ -241,7 +278,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 };
             }
             if (!prev) {
-                bootbox.alert('Made ' + frm.idInfo + ' object!');
+                $scope.announceDone(frm);
             }
         } else {
             bootbox.alert('Objects cannot be orphans! Please choose a parent!')
@@ -343,6 +380,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.drawTree('main');
 
     }
+    $scope.saveObj=[]
     $scope.encodeSave = function() {
         $scope.adding = false;
         $scope.rem = false;
@@ -350,7 +388,11 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.bgShow = false;
         if (!$scope.saving) {
             $scope.saving = true;
-            var saveOut = JSON.stringify($scope.objs);
+            angular.copy($scope.objs,$scope.saveObj);
+            $scope.saveObj.unshift($scope.theTitle||'');
+            $scope.saveObj.unshift($scope.bgForm);
+            var saveOut = JSON.stringify($scope.saveObj);
+            //now encode the whole thing!
             saveOutEnc = window.btoa(saveOut);
             $scope.saveTxt = saveOutEnc;
         } else {
@@ -373,6 +415,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             bootbox.confirm("Are you sure? Loading a scene will erase what you have!", function(confRez) {
                 console.log('load confirm:', confRez);
                 if (confRez) {
+                    $scope.bgForm = parsedStuff.shift();//take off the first item, which is the bgForm;
+                    console.log('after bg stuff removed:',parsedStuff);
+                    $scope.theTitle = parsedStuff.shift();//take off the second item, which is the title;
+                    console.log('title',$scope.theTitle);
+                    $scope.updateCol(0,1);
+                    $scope.chTitle();
+                    $scope.$digest();
                     angular.copy(parsedStuff, $scope.objs);
                     $('#main').html('');
                     $('#mainTree').html('');
@@ -410,7 +459,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 idInfo: loadObj.idInfo,
                 objType: loadObj.objType
             }
-            $scope.makeObj(toMake);
+            $scope.makeObj(toMake,1);
         });
     };
     $scope.$watch("objForm", function(frmEd) {
@@ -538,7 +587,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     '-webkit-filter': theFilt,
                     'filter': theFilt,
                 });
-            }else{
+            } else {
                 $('#all').css({
                     'background': 'url(' + $scope.bgForm.img + ')',
                     'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
@@ -572,9 +621,99 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.saving = false;
 
         //show the following warning if user tries to access non-IE-compliant stuff
-        if ($scope.bgShow && !$scope.ackIe && window.navigator.userAgent.indexOf("MSIE ")>0){
+        if ($scope.bgShow && !$scope.ackIe && window.navigator.userAgent.indexOf("MSIE ") > 0) {
             bootbox.alert('It looks like you\'re using Internet Explorer! Some features aren\'t available in IE!')
             $scope.ackIe = true;
         }
+    }
+    window.onkeyup = function(e) {
+        if (e.which == 27) {
+            e.preventDefault();
+            $scope.objForm = {
+                parent: '#main',
+                objType: 0,
+                x: 0,
+                y: 0,
+                radWid: 0,
+                h: 0,
+                d: 0,
+                rX: 0,
+                rY: 0,
+                rZ: 0,
+                color: {
+                    hue: 0,
+                    sat: 0,
+                    val: 0,
+                    red: 0,
+                    green: 0,
+                    blue: 0,
+                    gloPow: 0,
+                    trans: 0,
+                    img: '',
+                    rgb: 'hsv',
+                    spec: 1
+                },
+                cap: {
+                    isCapped: true,
+                    pos: 100
+                }
+            };
+            $scope.loading = false;
+            $scope.adding = false;
+            $scope.rem = false;
+            $scope.saving = false;
+            $scope.bgShow = false;
+            $scope.$digest();
+        } else if (e.which == 13 && $scope.adding) {
+            console.log('triggering form!')
+            $('#addObjForm').submit();
+        }
+    }
+    $scope.trashScene = function() {
+        if ($scope.objs.length) {
+
+            bootbox.confirm("Are you absolutely sure you wanna wipe your scene?", function(result) {
+                if (result) {
+                    $scope.objs = [];
+                    $scope.parentList = []; //list of parent objects
+                    $scope.parentList.push($('#main'));
+                    $scope.objForm = {
+                        parent: '#main',
+                        objType: 0,
+                        x: 0,
+                        y: 0,
+                        radWid: 0,
+                        h: 0,
+                        d: 0,
+                        rX: 0,
+                        rY: 0,
+                        rZ: 0,
+                        color: {
+                            hue: 0,
+                            sat: 0,
+                            val: 0,
+                            red: 0,
+                            green: 0,
+                            blue: 0,
+                            gloPow: 0,
+                            trans: 0,
+                            img: '',
+                            rgb: 'hsv',
+                            spec: 1
+                        },
+                        cap: {
+                            isCapped: true,
+                            pos: 100
+                        }
+                    };
+                    $('#mainTree').html('');
+                    $('#main').html('');
+                }
+            });
+        }
+    }
+    $scope.chTitle = function(){
+        console.log(document.title)
+        loadUnloadFact.changeTit($scope.theTitle);
     }
 });

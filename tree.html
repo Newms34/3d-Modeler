@@ -2,25 +2,30 @@
 <html>
 
 <head>
-    <title>tree!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>DaveModeler!</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
     <link rel='stylesheet' href='tree.css' />
 </head>
 
 <body>
-    <div id ='all' ng-app='treeTest' ng-controller='MainController'>
-        <div id='toggleAdd' ng-click='toggleWind(0);' class='btn btn-success'>&#9998;ADD AN OBJECT</div>
-        <div id='toggleRem' ng-click='toggleWind(1);' class='btn btn-warning'>&#127796;VIEW TREE/REMOVE</div>
-        <div id='save' ng-click='encodeSave();' class='btn btn-primary'>&#128190;SAVE SCENE</div>
-        <div id='load' ng-click='showLoad();' class='btn btn-info'>&#128194;LOAD SCENE</div>
-        <div id='load' ng-click='showBg();' class='btn btn-default'>&#128506;SCENE OPTIONS</div>
-        <br/>Enable movement?:
-        <input type='checkbox' ng-model='moveEm' />
+    <div id='all' ng-app='modeler' ng-controller='MainController'>
+        <div id='menu'>
+            <div id='toggleAdd' ng-click='toggleWind(0);' class='btn btn-success col-lg-2'>&#9998;ADD AN OBJECT</div>
+            <div id='toggleRem' ng-click='toggleWind(1);' class='btn btn-warning col-lg-2'>&#127796;VIEW TREE/REMOVE</div>
+            <div id='save' ng-click='encodeSave();' class='btn btn-primary col-lg-2'>&#128190;SAVE SCENE</div>
+            <div id='load' ng-click='showLoad();' class='btn btn-info col-lg-2'>&#128194;LOAD SCENE</div>
+            <div id='load' ng-click='showBg();' class='btn btn-default col-lg-2'>&#128506;SCENE OPTIONS</div>
+            &nbsp;&nbsp;&nbsp;Enable movement?:
+            <div id='trash' ng-click='trashScene()' class='btn col-lg-2'></div>
+            <input type='checkbox' ng-model='moveEm' />
+        </div>
         <div id='addObjForm' class='panel panel-success col-md-6 pull-right panelBg' ng-if='adding'>
             <div class='panel-heading'>Add your object!</div>
             <div class='panel-body'>
                 <div class='col-md-offset-2 col-md-8'>
-                    <form class='form-horizontal' role='form' ng-submit='maker(objForm)'>
+                    <form class='form-horizontal' id='addObjForm' role='form' ng-submit='maker(objForm,0)'>
                         <div class="form-group">
                             <label class="control-label col-sm-2" for="email">Parent:</label>
                             <div class="col-sm-10">
@@ -107,11 +112,11 @@
                         <div class="form-group" ng-if='objForm.type!==0'>
                             <label class="control-label col-sm-4">Cap object?: </label>
                             <div class="col-md-8 pull-right">
-                                <input type="checkbox" value='0' class='numInp' id="isCap" ng-model='objForm.cap.isCapped' required/>
+                                <input type="checkbox" value='0' class='numInp' id="isCap" ng-model='objForm.cap.isCapped' />
                             </div>
                             <label class="control-label col-sm-4" ng-if='objForm.cap.isCapped'>Cap Positions: {{objForm.cap.pos}}</label>
                             <div class="col-md-8 pull-right" ng-if='objForm.cap.isCapped'>
-                                <input type="range" value='0' class='numInp' id="capPos" ng-model='objForm.cap.pos' min='-500' max='500' required/>
+                                <input type="range" value='0' class='numInp' id="capPos" ng-model='objForm.cap.pos' min='-500' max='500' />
                             </div>
                         </div>
                         <!---texture stuff-->
@@ -156,7 +161,8 @@
                                 <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb!="tex"'>
                                     Glow:
                                     <input type="range" ng-value='0' min='0' max='100' class='numInp' id="cglo" ng-model='objForm.color.gloPow' step='0.05' /> trans:
-                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05' />
+                                    <input type="range" ng-value='0' min='0' max='100' class='numInp' id="ctran" ng-model='objForm.color.trans' step='0.05' /> Shininess:
+                                    <input type="range" ng-value='1' min='0' max='3' class='numInp' id="cspec" ng-model='objForm.color.spec' step='0.05' />
                                 </div>
                             </div>
                         </div>
@@ -202,6 +208,12 @@
         <div id='bgForm' class='panel panel-default col-md-6 pull-right panelBg' ng-show='bgShow'>
             <div class='panel-heading'>Scene Options</div>
             <div class='panel-body'>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="objName">Name of your scene:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="sceneName" placeholder="Enter a name" ng-model='theTitle' ng-change='chTitle();'>
+                    </div>
+                </div>
                 <div class='form-group'>
                     <div class="form-group">
                         <label class="control-label col-sm-5">Background Mode:</label>
@@ -246,7 +258,7 @@
                     <div class="col-md-6">
                         <div class='col-md-6'>None:</div>
                         <div class='col-md-6'>
-                            <input type="radio" value='none' class='numInp' id="noFilt" ng-model='bgForm.filter' />
+                            <input type="radio" value='none' class='numInp' id="noFilt" ng-model='bgForm.filter' ng-change='updateCol(1,1)' />
                         </div>
                         <div class='col-md-6'>Blur:</div>
                         <div class='col-md-6'>

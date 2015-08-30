@@ -1,7 +1,7 @@
 app.factory('loadUnloadFact', function($rootScope) {
     var colCalc = function(item, colInfo) {
         if (colInfo.rgb == 'rgb' || colInfo.rgb == 'hsv') {
-            theShade = Math.floor(Math.abs(item - 15) + parseInt(colInfo.val));
+            theShade = Math.floor(Math.abs(colInfo.spec * (item - 15)) + parseInt(colInfo.val - (colInfo.spec / 2)));
             theTrans = 1 - (colInfo.trans / 100);
             return 'hsla(' + colInfo.hue + ',' + colInfo.sat + '%,' + theShade + '%,' + theTrans + ')';
         } else {
@@ -19,8 +19,8 @@ app.factory('loadUnloadFact', function($rootScope) {
             capEl.style.height = 2 * r + 'px';
             capEl.style.width = 2 * r + 'px';
             var zTrans = 0;
-            if (q){
-                zTrans = pos-h;
+            if (q) {
+                zTrans = pos - h;
             } else {
                 zTrans = pos;
             }
@@ -49,7 +49,7 @@ app.factory('loadUnloadFact', function($rootScope) {
             $(p).append(circCont);
 
             if (cap.isCapped) {
-                capSegs(2, color, circCont.id, r, cap.pos,h);
+                capSegs(2, color, circCont.id, r, cap.pos, h);
             }
             //construct cylinder segs
             for (var i = 0; i < 30; i++) {
@@ -151,7 +151,7 @@ app.factory('loadUnloadFact', function($rootScope) {
             coneCont.style.top = y + 'px';
             $(p).append(coneCont);
             if (cap.isCapped) {
-                capSegs(1, color, coneCont.id, r, cap.pos,h);
+                capSegs(1, color, coneCont.id, r, cap.pos, h);
             }
             //construct cone segs
             for (var i = 0; i < 30; i++) {
@@ -233,6 +233,12 @@ app.factory('loadUnloadFact', function($rootScope) {
             s *= 100;
             l *= 100;
             return [h, s, l];
+        },
+        changeTit: function(tit) {
+            console.log(tit)
+            var t = setTimeout(function() {
+                document.title=tit;
+            }, 1000);
         }
     };
 });

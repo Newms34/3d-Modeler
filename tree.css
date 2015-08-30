@@ -1,35 +1,41 @@
 .numInp {
     width: 70px;
 }
-html,body{
-    height:100%;
-    width:100%;
-    margin:0;
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
 }
-#all{
-    width:100%;
-    height:900%;
-    margin:0;
+
+#all {
+    width: 100%;
+    height: 900%;
+    margin: 0;
     transform-style: preserve-3d;
 }
+
 #main {
     transform-style: preserve-3d;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 5%;
     width: 1%;
     height: 1%;
     transform-origin: 50% 50%;
     z-index: -99;
 }
+
 .cap {
     transform-style: preserve-3d;
     width: 5px;
     height: 5px;
     position: absolute;
     background: #bbb;
-    border-radius:50%;
+    border-radius: 50%;
 }
+
 .circleContainer {
     transform-style: preserve-3d;
     width: 5px;
@@ -92,12 +98,13 @@ html,body{
 }
 
 .panelBg {
-    background-color: rgba(220, 220, 230,.7);
+    background-color: rgba(220, 220, 230, .7);
 }
 
 textarea {
     width: 300px;
     height: 200px;
+    color:#000;
 }
 
 #objImg {
@@ -125,7 +132,7 @@ textarea {
 
 input[type=range]::-moz-range-track {
     width: 95%;
-    float:right;
+    float: right;
     background: #333;
     border: 1px solid #555;
     border-radius: 3px;
@@ -133,19 +140,57 @@ input[type=range]::-moz-range-track {
 
 input[type=range]::-ms-track {
     width: 95%;
-    float:right;
+    float: right;
     background: #333;
     border: 1px solid #555;
     border-radius: 3px;
 }
+
 input[type=range]::-webkit-slider-runnable-track {
     width: 95%;
-    float:right;
+    float: right;
     background: #333;
     border: 1px solid #555;
     border-radius: 3px;
 }
-.label, .control-label {
-    color:#000;
+
+.label,
+.control-label {
+    color: #000;
     background-color: #fff
+}
+
+#trash {
+    background-image: url('trash.png');
+    background-size: contain;
+    position: absolute;
+    right: 0;
+    top: 0px;
+    width:60px;
+    background-repeat: no-repeat;
+    height:100%;
+    transition-duration: .5s;
+    transform-origin:0 0;
+}
+
+#trash:hover {
+    transform: rotate(10deg);
+}
+
+#menu {
+    z-index: 99;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.btn {
+    margin-bottom: 5px;
+}
+
+
+@media screen and (max-width: 780px) {
+    .btn {
+        display:block;
+    }
 }
