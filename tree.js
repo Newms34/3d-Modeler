@@ -3,6 +3,7 @@ var app = angular.module("modeler", []);
 app.controller("MainController", function($scope, $window, $compile, loadUnloadFact) {
     $scope.adding = false;
     $scope.moveEm = false;
+    $scope.custMoveMode = false;
     $scope.nameConf = false;
     $scope.loading = false; //loading window not shown
     $scope.saving = false;
@@ -11,7 +12,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.totals = {};
     $scope.saveTxt = '';
     $scope.prevMode = false;
-    $scope.theTitle='';
+    $scope.theTitle = 'Untitled';
     $scope.bgForm = {
         hue: 0,
         sat: 0,
@@ -81,10 +82,17 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         cap: {
             isCapped: true,
             pos: 100
+        },
+        custMove: {
+            active: false,
+            xCont: 'y',
+            yCont: 'x',
+            xMag: 1,
+            yMag: 1
         }
     };
 
-    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType) {
+    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType, cap, custMove) {
         //constructor for objects.
         this.x = x; //xpos
         this.y = y; //ypos
@@ -98,6 +106,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.color = color; //color obj ({hue, sat, val,red,green,blue,glow,img})
         this.idInfo = idInfo; //obj's id
         this.objType = objType; //boolean
+        this.cap = cap;
+        this.custMove = custMove;
     }
     $scope.announceDone = function(frm) {
         if (frm.objType == 0) {
@@ -163,6 +173,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 cap: {
                     isCapped: true,
                     pos: 100
+                },
+                custMove: {
+                    active: false,
+                    xCont: 'y',
+                    yCont: 'x',
+                    xMag: 1,
+                    yMag: 1
                 }
             };
             $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
@@ -172,7 +189,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
             frm.d = frm.d || 0;
-            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType));
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove));
+            //note that frm.custMove, the custom movement thing, does not need to be fed into the constructors.
             if (frm.objType == 0) {
                 //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
                 console.log('makin a cube')
@@ -206,6 +224,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     cap: {
                         isCapped: true,
                         pos: 100
+                    },
+                    custMove: {
+                        active: false,
+                        xCont: 'y',
+                        yCont: 'x',
+                        xMag: 1,
+                        yMag: 1
                     }
                 };
             } else if (frm.objType == 1) {
@@ -240,6 +265,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     cap: {
                         isCapped: true,
                         pos: 100
+                    },
+                    custMove: {
+                        active: false,
+                        xCont: 'y',
+                        yCont: 'x',
+                        xMag: 1,
+                        yMag: 1
                     }
                 };
             } else {
@@ -274,6 +306,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     cap: {
                         isCapped: true,
                         pos: 100
+                    },
+                    custMove: {
+                        active: false,
+                        xCont: 'y',
+                        yCont: 'x',
+                        xMag: 1,
+                        yMag: 1
                     }
                 };
             }
@@ -286,8 +325,14 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         return frm;
     }
     window.onmousemove = function(e) {
+        //shimmy shim shims
+        e.x = e.x||e.clientX;
+        e.y = e.y||e.clientY;
+
         if ($scope.moveEm) {
-            $('#main').css('transform', 'rotateX(' + e.y + 'deg) rotateY(' + e.x + 'deg)');
+            $('#main').css('transform', 'rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
+        } else if($scope.custMoveMode){
+            loadUnloadFact.custMoveDo($scope.objs,e.x,e.y);
         }
     }
     $scope.scanForKids = function(par) {
@@ -380,7 +425,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.drawTree('main');
 
     }
-    $scope.saveObj=[]
+    $scope.saveObj = []
     $scope.encodeSave = function() {
         $scope.adding = false;
         $scope.rem = false;
@@ -388,8 +433,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.bgShow = false;
         if (!$scope.saving) {
             $scope.saving = true;
-            angular.copy($scope.objs,$scope.saveObj);
-            $scope.saveObj.unshift($scope.theTitle||'');
+            angular.copy($scope.objs, $scope.saveObj);
+            $scope.saveObj.unshift($scope.theTitle || 'Untitled');
             $scope.saveObj.unshift($scope.bgForm);
             var saveOut = JSON.stringify($scope.saveObj);
             //now encode the whole thing!
@@ -415,11 +460,11 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             bootbox.confirm("Are you sure? Loading a scene will erase what you have!", function(confRez) {
                 console.log('load confirm:', confRez);
                 if (confRez) {
-                    $scope.bgForm = parsedStuff.shift();//take off the first item, which is the bgForm;
-                    console.log('after bg stuff removed:',parsedStuff);
-                    $scope.theTitle = parsedStuff.shift();//take off the second item, which is the title;
-                    console.log('title',$scope.theTitle);
-                    $scope.updateCol(0,1);
+                    $scope.bgForm = parsedStuff.shift(); //take off the first item, which is the bgForm;
+                    console.log('after bg stuff removed:', parsedStuff);
+                    $scope.theTitle = parsedStuff.shift(); //take off the second item, which is the title;
+                    console.log('title', $scope.theTitle);
+                    $scope.updateCol(0, 1);
                     $scope.chTitle();
                     $scope.$digest();
                     angular.copy(parsedStuff, $scope.objs);
@@ -457,9 +502,11 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 rZ: loadObj.rZ,
                 color: loadObj.color,
                 idInfo: loadObj.idInfo,
-                objType: loadObj.objType
+                objType: loadObj.objType,
+                custMove: loadObj.custMove,
+                cap: loadObj.cap
             }
-            $scope.makeObj(toMake,1);
+            $scope.makeObj(toMake, 1);
         });
     };
     $scope.$watch("objForm", function(frmEd) {
@@ -580,19 +627,19 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     theFilt = '';
             }
             console.log(theFilt);
+            $('#allStuff').css({
+                'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
+                '-webkit-filter': theFilt,
+                'filter': theFilt,
+            });
             if ($scope.bgForm.rgb != 'tex') {
-                $('#all').css({
-                    'background': 'hsl(' + $scope.bgForm.hue + ',' + $scope.bgForm.sat + '%,' + $scope.bgForm.val + '%)',
-                    'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
-                    '-webkit-filter': theFilt,
-                    'filter': theFilt,
+                $('#bg').css({
+                    'background': 'hsl(' + $scope.bgForm.hue + ',' + $scope.bgForm.sat + '%,' + $scope.bgForm.val + '%)'
                 });
+
             } else {
-                $('#all').css({
-                    'background': 'url(' + $scope.bgForm.img + ')',
-                    'color': 'hsl(' + (360 - $scope.bgForm.hue) + ',' + $scope.bgForm.sat + '%,' + (100 - $scope.bgForm.val) + '%)',
-                    '-webkit-filter': theFilt,
-                    'filter': theFilt,
+                $('#bg').css({
+                    'background': 'url(' + $scope.bgForm.img + ')'
                 });
             }
         }
@@ -628,6 +675,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     window.onkeyup = function(e) {
         if (e.which == 27) {
+            //user pressed escape, so get rid of windows
             e.preventDefault();
             $scope.objForm = {
                 parent: '#main',
@@ -665,8 +713,17 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.bgShow = false;
             $scope.$digest();
         } else if (e.which == 13 && $scope.adding) {
+            //adding, user pressed enter, so submit!
             console.log('triggering form!')
             $('#addObjForm').submit();
+        } else if(e.which==82){
+            $scope.moveEm ? $scope.moveEm = false: $scope.moveEm = true;
+            $scope.custMoveMode = false;
+            $scope.$digest();
+        } else if(e.which==77){
+            $scope.custMoveMode ? $scope.custMoveMode = false: $scope.custMoveMode = true;
+            $scope.moveEm = false;
+            $scope.$digest();
         }
     }
     $scope.trashScene = function() {
@@ -708,11 +765,12 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     };
                     $('#mainTree').html('');
                     $('#main').html('');
+                    $scope.theTitle = untitled;
                 }
             });
         }
     }
-    $scope.chTitle = function(){
+    $scope.chTitle = function() {
         console.log(document.title)
         loadUnloadFact.changeTit($scope.theTitle);
     }

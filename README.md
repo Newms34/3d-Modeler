@@ -58,11 +58,13 @@
  - You can now name your scene.
  - Backgrounds included in loaded scenes!
  - Names included in loaded scenes!
+ - New Movement Modes: During object creation, you can specify what the mouse does to an object!
+ - Press R to toggle normal Rotation Mode. 
+ - Press M to toggle Custom Movement Mode. 
 
 ##Upcoming Features
- - New polyhedra: Pyramids, others!
+ - New polyhedra: Pyramids, others! 
  - Better verification! 
- - New 'animate mode': Click a button, and your mouse will switch from rotation mode to 'animate' mode!
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);

@@ -235,10 +235,50 @@ app.factory('loadUnloadFact', function($rootScope) {
             return [h, s, l];
         },
         changeTit: function(tit) {
-            console.log(tit)
+            //change the page title.
             var t = setTimeout(function() {
-                document.title=tit;
+                document.title = tit;
             }, 1000);
+        },
+        custMoveDo: function(arr, x, y) {
+                //normalize X and Y;
+            x = (100 * x / $(window).width()) - 50;
+            y = (100 * y / $(window).height()) - 50;
+            for (var n = 0; n < arr.length; n++) {
+                console.log(arr[n].custMove.active)
+                if (arr[n].custMove.active) {
+                    //ignore all the following if this isn't active;
+                    //construct obj's id
+                    var theId = '#';
+                    if (arr[n].objType == 0) {
+                        theId += 'boxParent' + arr[n].idInfo;
+                    } else if (arr[n].objType == 1) {
+                        theId += 'circParent' + arr[n].idInfo;
+                    } else {
+                        theId += 'coneParent' + arr[n].idInfo;
+                    }
+                    //calc total X, Y, Z rotation
+                    //start by setting all 3 to their stored vals
+                    var totalRots = {
+                        x: arr[n].rX,
+                        y: arr[n].rY,
+                        z: arr[n].rZ
+                    }
+                    var adjX = x * arr[n].custMove.xMag;
+                    var adjY = y * arr[n].custMove.yMag;
+                    //x takes precedence 
+                    if (arr[n].custMove.xCont != 'none') {
+                        totalRots[arr[n].custMove.xCont] += adjX;
+                    }
+                    //xControl takes precendence, so if both X and Y are set to control the same thing, X moves, while y is effectively set to 'none'
+                    if (arr[n].custMove.yCont != 'none' && arr[n].custMove.xCont != arr[n].custMove.yCont) {
+                        totalRots[arr[n].custMove.yCont] += adjY;
+                    }
+                    //adjust as per the x,y mouse vals
+                    console.log(totalRots);
+                    $(theId).css('transform', 'rotateX(' + totalRots.x + 'deg) rotateY(' + totalRots.y + 'deg) rotateZ(' + totalRots.z + 'deg)');
+                }
+            }
         }
     };
 });
