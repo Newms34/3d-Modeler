@@ -453,6 +453,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.loadDecode = function(dataToLoad) {
         //NEED ERR CHECK TO MAKE SURE ARR!
+        console.log('data',dataToLoad)
         var parsedStuff = [];
         try {
             parsedStuff = JSON.parse(window.atob(dataToLoad));
@@ -468,7 +469,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     $scope.chTitle();
                     $scope.$digest();
                     angular.copy(parsedStuff, $scope.objs);
-                    $('#main').html('');
+                    jquery('#main').html('');
                     $('#mainTree').html('');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
                     $scope.loadScene();
@@ -484,6 +485,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.enterLoad = function(e) {
         if (e.keyCode == 13) {
+            console.log('loaddecode')
             $scope.loadDecode($('#loadBox').val());
         }
     }
