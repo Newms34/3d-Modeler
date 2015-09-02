@@ -5,23 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <title>DaveModeler!</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
     <link rel='stylesheet' href='tree.css' />
 </head>
 
 <body>
     <div id='allStuff' ng-app='modeler' ng-controller='MainController'>
-        <div id='menu'>
-            <div id='toggleAdd' ng-click='toggleWind(0);' class='btn btn-success col-lg-2'>&#9998;ADD AN OBJECT</div>
-            <div id='toggleRem' ng-click='toggleWind(1);' class='btn btn-warning col-lg-2'>&#127796;VIEW TREE/REMOVE</div>
-            <div id='save' ng-click='encodeSave();' class='btn btn-primary col-lg-2'>&#128190;SAVE SCENE</div>
-            <div id='load' ng-click='showLoad();' class='btn btn-info col-lg-2'>&#128194;LOAD SCENE</div>
-            <div id='bgButt' ng-click='showBg();' class='btn btn-default col-lg-2'>&#128506;SCENE OPTIONS</div>
-            <div id='moveModeInd' class='fake-btn col-lg-2'><span ng-if='moveEm==false && custMoveMode==false'>&#10060;MOVE MODE: None</span><span ng-if='moveEm==true'>&#8635;MOVE MODE: Rotate</span><span ng-if='custMoveMode==true'>🏃MOVE MODE: Custom</span></div>
-            <div id='trash' ng-click='trashScene()' class='btn col-lg-2'></div>
-    
-        </div>
-        <div id='addObjForm' class='panel panel-success col-md-6 pull-right panelBg' ng-if='adding'>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Brand</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" ng-click='toggleWind(0);' class='menTog menuBtns' ng-class="{'btn-success':adding}">&#9998;ADD OBJECT<span class="sr-only" ng-if='adding'>(current)</span></a></li>
+                        <li><a href="#" ng-click='toggleWind(1);' class='menTog menuBtns' ng-class="{'btn-warning':rem}">&#127796;VIEW TREE/REMOVE OBJECT<span class="sr-only" ng-if='rem'>(current)</span></a></li>
+                        <li><a href="#" ng-click='showLoad();' class='menTog menuBtns' ng-class="{'btn-info':loading}">&#128194;LOAD SCENE<span class="sr-only" ng-if='loading'>(current)</span></a></li>
+                        <li><a href="#" ng-click='encodeSave();' class='menTog menuBtns' ng-class="{'btn-primary':saving}">&#128190;SAVE SCENE<span class="sr-only" ng-if='saving'>(current)</span></a></li>
+                        <li><a href="#" ng-click='showBg();' class='menTog menuBtns' ng-class="{'btn-default':bgShow}">&#128506;SCENE OPTIONS<span class="sr-only" ng-if='bgShow'>(current)</span></a></li>
+                        <li class='fake-btn'><span ng-if='moveEm==false && custMoveMode==false'>&#10060;MOVE MODE: None</span><span ng-if='moveEm==true'>&#8635;MOVE MODE: Rotate</span><span ng-if='custMoveMode==true'>🏃MOVE MODE: Custom</span></li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div id='addObjForm' class='panel panel-success col-md-6 panelBg draggable' ng-show='adding'>
             <div class='panel-heading'>Add your object!</div>
             <div class='panel-body'>
                 <div class='col-md-offset-2 col-md-8'>
@@ -210,13 +228,13 @@
                 </div>
             </div>
         </div>
-        <div id='remObjForm' class='panel panel-warning col-md-6 pull-right panelBg' ng-show='rem'>
+        <div id='remObjForm' class='panel panel-warning col-md-6 panelBg draggable' ng-show='rem'>
             <div class='panel-heading'>Scene Tree</div>
             <div class='panel-body'>
                 <div id='mainTree'></div>
             </div>
         </div>
-        <div id='loadForm' class='panel panel-info col-md-6 pull-right panelBg' ng-if='loading'>
+        <div id='loadForm' class='panel panel-info col-md-6 panelBg draggable' ng-show='loading'>
             <div class='panel-heading'>Load a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">
@@ -227,7 +245,7 @@
                 </div>
             </div>
         </div>
-        <div id='saveForm' class='panel panel-success col-md-6 pull-right panelBg' ng-show='saving'>
+        <div id='saveForm' class='panel panel-primary col-md-6 panelBg draggable' ng-show='saving'>
             <div class='panel-heading'>Save a Scene</div>
             <div class='panel-body'>
                 <div class="form-group">
@@ -238,7 +256,7 @@
                 </div>
             </div>
         </div>
-        <div id='bgForm' class='panel panel-default col-md-6 pull-right panelBg' ng-show='bgShow'>
+        <div id='bgForm' class='panel panel-default col-md-6 panelBg draggable' ng-show='bgShow' >
             <div class='panel-heading'>Scene Options</div>
             <div class='panel-body'>
                 <div class="form-group">
@@ -332,6 +350,7 @@
         <div id='bg'>
         </div>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src='https://code.jquery.com/ui/1.11.4/jquery-ui.min.js'/>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
         <script src='bootbox.min.js'></script>

@@ -326,13 +326,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     window.onmousemove = function(e) {
         //shimmy shim shims
-        e.x = e.x||e.clientX;
-        e.y = e.y||e.clientY;
+        e.x = e.x || e.clientX;
+        e.y = e.y || e.clientY;
 
         if ($scope.moveEm) {
             $('#main').css('transform', 'rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
-        } else if($scope.custMoveMode){
-            loadUnloadFact.custMoveDo($scope.objs,e.x,e.y);
+        } else if ($scope.custMoveMode) {
+            loadUnloadFact.custMoveDo($scope.objs, e.x, e.y);
         }
     }
     $scope.scanForKids = function(par) {
@@ -716,12 +716,12 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             //adding, user pressed enter, so submit!
             console.log('triggering form!')
             $('#addObjForm').submit();
-        } else if(e.which==82){
-            $scope.moveEm ? $scope.moveEm = false: $scope.moveEm = true;
+        } else if (e.which == 82) {
+            $scope.moveEm ? $scope.moveEm = false : $scope.moveEm = true;
             $scope.custMoveMode = false;
             $scope.$digest();
-        } else if(e.which==77){
-            $scope.custMoveMode ? $scope.custMoveMode = false: $scope.custMoveMode = true;
+        } else if (e.which == 77) {
+            $scope.custMoveMode ? $scope.custMoveMode = false : $scope.custMoveMode = true;
             $scope.moveEm = false;
             $scope.$digest();
         }
@@ -774,4 +774,9 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         console.log(document.title)
         loadUnloadFact.changeTit($scope.theTitle);
     }
+    $(function() {
+        $('.panel').draggable({
+            containment: [0,0,$(window).width()/2,$(window).height()/2]
+        });
+    });
 });

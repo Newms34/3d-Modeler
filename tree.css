@@ -186,11 +186,8 @@ input[type=range]::-webkit-slider-runnable-track {
     transform: rotate(10deg);
 }
 
-#menu {
-    z-index: 99;
-    width: 100%;
-    top: 0;
-    left: 0;
+.menTog:hover {
+    background-color:#bbb!important;
 }
 
 .btn {
@@ -231,13 +228,17 @@ input[type=range]#hue::-webkit-slider-runnable-track {
     border: 1px inset #555;
     border-radius: 3px;
 }
-
+.fake-btn{
+    padding:15px 0px;
+}
 .mag{
     border:none;
     background:transparent;
     min-width:2em;
 }
-.fakeBtn{
-    padding:6px 12px;
-    font-size:14pt;
+.menuBtns{
+    box-shadow:0 0 22px -5px #000 inset;
+}
+.panel-heading {
+    cursor:move;
 }
