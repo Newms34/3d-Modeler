@@ -453,7 +453,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.loadDecode = function(dataToLoad) {
         //NEED ERR CHECK TO MAKE SURE ARR!
-        console.log('data',dataToLoad)
+        console.log('data', dataToLoad)
         var parsedStuff = [];
         try {
             parsedStuff = JSON.parse(window.atob(dataToLoad));
@@ -469,7 +469,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     $scope.chTitle();
                     $scope.$digest();
                     angular.copy(parsedStuff, $scope.objs);
-                    jquery('#main').html('');
+                    $('#main').html('');
                     $('#mainTree').html('');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
                     $scope.loadScene();
@@ -722,11 +722,26 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.moveEm ? $scope.moveEm = false : $scope.moveEm = true;
             $scope.custMoveMode = false;
             $scope.$digest();
-        } else if (e.which == 77) {
-            $scope.custMoveMode ? $scope.custMoveMode = false : $scope.custMoveMode = true;
-            $scope.moveEm = false;
+        } else if (document.activeElement.type!='text' && document.activeElement.tagName.toLowerCase()!='textarea') {
+            console.log(e.which )
+            if (e.which == 77) {
+                $scope.custMoveMode ? $scope.custMoveMode = false : $scope.custMoveMode = true;
+                $scope.moveEm = false;
+                $scope.$digest();
+            } else if (e.which == 65) {
+                $scope.toggleWind(0);
+            } else if (e.which == 84) {
+                $scope.toggleWind(1);
+            } else if (e.which == 76) {
+                $scope.showLoad();
+            } else if (e.which == 83) {
+                $scope.encodeSave();
+            } else if (e.which == 79) {
+                $scope.showBg();
+            }
             $scope.$digest();
         }
+        console.log(document.activeElement.type!='text' && document.activeElement.tagName.toLowerCase()!='textarea')
     }
     $scope.trashScene = function() {
         if ($scope.objs.length) {
@@ -767,7 +782,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     };
                     $('#mainTree').html('');
                     $('#main').html('');
-                    $scope.theTitle = untitled;
+                    $scope.theTitle = 'untitled';
                 }
             });
         }
@@ -778,7 +793,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $(function() {
         $('.panel').draggable({
-            containment: [0,0,$(window).width()/2,$(window).height()/2]
+            containment: [0, 0, $(window).width() / 2, $(window).height() / 2]
         });
     });
 });
