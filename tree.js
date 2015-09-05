@@ -1,4 +1,5 @@
 var app = angular.module("modeler", []);
+var tempWAdj=20;
 
 app.controller("MainController", function($scope, $window, $compile, loadUnloadFact) {
     $scope.adding = false;
@@ -25,7 +26,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         blue: 255,
         filter: 'none',
         filtAmt: 0
-    }
+    };
     $scope.ackIe = false;
     $scope.toggleWind = function(which) {
         if (!which) {
@@ -90,6 +91,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             yCont: 'x',
             xMag: 1,
             yMag: 1
+        },
+        coneType: {
+            type: 'cone',
+            numSegs: 5
         }
     };
 
@@ -181,6 +186,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     yCont: 'x',
                     xMag: 1,
                     yMag: 1
+                },
+                coneType: {
+                    type: 'cone',
+                    numSegs: 5
                 }
             };
             $scope.prevMode = false; //just went from prev mode to create mode, so set this to false for the next obj
@@ -190,12 +199,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
             frm.d = frm.d || 0;
-            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove));
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove));
+            if (frm.objType == 2 && frm.coneType.type == 'pyramid') {
+                frm.radWidFull = [frm.radWid, frm.coneType.numSegs];
+                frm.cap.isCapped = false;
+            } else {
+                frm.radWidFull = frm.radWid;
+            }
             //note that frm.custMove, the custom movement thing, does not need to be fed into the constructors.
             if (frm.objType == 0) {
                 //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
                 console.log('makin a cube')
-                var id = loadUnloadFact.createCube(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
+                var id = loadUnloadFact.createCube(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -232,11 +247,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         yCont: 'x',
                         xMag: 1,
                         yMag: 1
+                    },
+                    coneType: {
+                        type: 'cone',
+                        numSegs: 5
                     }
                 };
             } else if (frm.objType == 1) {
                 console.log('makin a cyl')
-                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
+                var id = loadUnloadFact.createCircle(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -273,11 +292,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         yCont: 'x',
                         xMag: 1,
                         yMag: 1
+                    },
+                    coneType: {
+                        type: 'cone',
+                        numSegs: 5
                     }
                 };
             } else {
-                console.log('makin a cone')
-                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWid, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
+                console.log('makin a cone or pyramid');
+                var id = loadUnloadFact.createCone(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.cap);
                 $scope.parentList.push($('#' + id));
                 $scope.nameConf = false;
                 $scope.objForm = {
@@ -314,6 +337,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         yCont: 'x',
                         xMag: 1,
                         yMag: 1
+                    },
+                    coneType: {
+                        type: 'cone',
+                        numSegs: 5
                     }
                 };
             }
@@ -376,24 +403,24 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.drawTree = function(par) {
         //first one will be main+Tree, or #mainTree. If this is first one, clear it
-            var fullParent = par;
+        var fullParent = par;
         if (par == 'main') {
             fullParent = '#main';
             $('#mainTree').html('');
         } else {
             for (var q = 0; q < $scope.objs.length; q++) {
-                if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==0){
+                if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 0) {
                     //boxParent
-                    fullParent = '#boxParent'+fullParent;
-                } else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==1){
+                    fullParent = '#boxParent' + fullParent;
+                } else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 1) {
                     //circ
-                    fullParent = '#circParent'+fullParent;
-                }else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==2){
+                    fullParent = '#circParent' + fullParent;
+                } else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 2) {
                     //cone
-                    fullParent = '#coneParent'+fullParent;
+                    fullParent = '#coneParent' + fullParent;
                 }
             }
-            console.log(fullParent,'is the parent')
+            console.log(fullParent, 'is the parent')
         }
         //now deal with dem rowdy kidz
         var kidsToScan = []; //list of kids to recurse thru
@@ -536,7 +563,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 idInfo: loadObj.idInfo,
                 objType: loadObj.objType,
                 custMove: loadObj.custMove,
-                cap: loadObj.cap
+                cap: loadObj.cap,
+                coneType: loadObj.coneType
             };
             $scope.makeObj(toMake, 1);
         });
@@ -624,15 +652,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $('#colLab').css('background-image', 'none');
         } else {
             //text col is opposite of bg col
-            /*vals for filt:
-            blur:*20
-            sepia:1
-            grayscale:1
-            sat:10
-            bright:10
-            contrast:10
-            hue-rot:360
-            */
             var theFilt = '';
             switch ($scope.bgForm.filter) {
                 case 'blur':
@@ -737,6 +756,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 cap: {
                     isCapped: true,
                     pos: 100
+                },
+                coneType: {
+                    type: 'cone',
+                    numSegs: 5
                 }
             };
             $scope.loading = false;
@@ -809,6 +832,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                         cap: {
                             isCapped: true,
                             pos: 100
+                        },
+                        coneType: {
+                            type: 'cone',
+                            numSegs: 5
                         }
                     };
                     $('#mainTree').html('');

@@ -150,25 +150,32 @@ app.factory('loadUnloadFact', function($rootScope) {
             coneCont.style.left = x + 'px';
             coneCont.style.top = y + 'px';
             $(p).append(coneCont);
-            if (cap.isCapped) {
+            if (cap.isCapped && !(r instanceof Array)) {
                 capSegs(1, color, coneCont.id, r, cap.pos, h);
             }
             //construct cone segs
-            for (var i = 0; i < 30; i++) {
+            var numSegs = 30; //default to 30 segs for a round pyramid (a cone)
+            console.log('r in cone fact', r)
+            if (r instanceof Array) {
+                numSegs = r[1];
+                r = r[0];
+            }
+            var widthAdj = 2173.8934*Math.pow(numSegs,-3.2333);
+            for (var i = 0; i < numSegs; i++) {
                 var el = document.createElement('div');
                 el.className = 'conePiece';
                 el.style.borderBottom = h + 'px solid black';
                 //calculate width of each segment 
-                var width = Math.ceil((2 / 30) * Math.PI * r) / 2;
+                var width = (Math.ceil((2 / numSegs) * Math.PI * r) / 2) + (r * Math.ceil(widthAdj) / 100);
                 //position, tilt
                 var segRot = Math.ceil(180 * Math.atan(r / h) / Math.PI);
-                el.style.transform = 'rotateY(' + i * 12 + 'deg) translateZ(' + r + 'px) rotateX(' + segRot + 'deg)';
+                el.style.transform = 'rotateY(' + i * (360 / numSegs) + 'deg) translateZ(' + r + 'px) rotateX(' + segRot + 'deg)';
                 //and finally color. this bit 'shades' the cone so that it's easier to see that it's 3d.
                 var col = colCalc(i, color);
                 var segHeight = Math.ceil(Math.sqrt(Math.pow(h, 2) + Math.pow(r, 2)));
                 el.style.borderBottom = segHeight + 'px solid ' + col;
-                el.style.borderLeft = width + 1 + 'px solid transparent';
-                el.style.borderRight = width + 1 + 'px solid transparent';
+                el.style.borderLeft = width + 'px solid transparent';
+                el.style.borderRight = width + 'px solid transparent';
                 el.style.boxShadow = 'none';
                 $('#' + coneCont.id).append(el);
             }
@@ -241,7 +248,7 @@ app.factory('loadUnloadFact', function($rootScope) {
             }, 1000);
         },
         custMoveDo: function(arr, x, y) {
-                //normalize X and Y;
+            //normalize X and Y;
             x = (100 * x / $(window).width()) - 50;
             y = (100 * y / $(window).height()) - 50;
             for (var n = 0; n < arr.length; n++) {

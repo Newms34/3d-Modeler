@@ -32,7 +32,7 @@
                         <li><a href="#" ng-click='showLoad();' class='menTog menuBtns' ng-class="{'btn-info':loading}">&#128194;LOAD SCENE<span class="sr-only" ng-if='loading'>(current)</span></a></li>
                         <li><a href="#" ng-click='encodeSave();' class='menTog menuBtns' ng-class="{'btn-primary':saving}">&#128190;SAVE SCENE<span class="sr-only" ng-if='saving'>(current)</span></a></li>
                         <li><a href="#" ng-click='showBg();' class='menTog menuBtns' ng-class="{'btn-default':bgShow}">&#9997;SCENE OPTIONS<span class="sr-only" ng-if='bgShow'>(current)</span></a></li>
-                        <li class='fake-btn'><span ng-if='moveEm==false && custMoveMode==false'>&#10060;MOVE MODE: None</span><span ng-if='moveEm==true'>&#8635;MOVE MODE: Rotate</span><span ng-if='custMoveMode==true'>🏃MOVE MODE: Custom</span></li>
+                        <li class='fake-btn'><span ng-if='moveEm==false && custMoveMode==false'>&#10060;MOVE MODE: None</span><span ng-if='moveEm==true'>&#8635;MOVE MODE: Rotate</span><span ng-if='custMoveMode==true'>MOVE MODE: Custom</span></li>
                         <li id='trash' title='Trash scene' ng-click='trashScene()'></li>
                     </ul>
                 </div>
@@ -66,18 +66,25 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">Object Type</label>
                             <!-- <div class="col-md-6"> -->
-                            <table>
-                                <tr>
+                            <table class='table'>
+                                <tr class='info'>
                                     <td>
                                         <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType' ng-change='coneSafe()'> Cube
                                         <br/>
                                         <input type="radio" value='1' class='numInp' id="pikCyl" ng-model='objForm.objType' ng-change='coneSafe()' /> Cylinder
                                         <br/>
-                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()' /> Cone
+                                        <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()' /> Cone/Pyramid
                                         <br/>
                                     </td>
                                     <td class='success' style='padding:5px;'>
                                         <img src='fig{{objForm.objType}}.jpg' id='objImg' />
+                                    </td>
+                                </tr>
+                                <tr ng-show='objForm.objType==2' class='success'>
+                                    <td>What type of cone?:<br/>
+                                        <input type="radio" value='cone' class='numInp' id="pikConCon" ng-model='objForm.coneType.type'/> Cone
+                                        <br/>
+                                        <input type="radio" value='pyramid' class='numInp' id="pikConPyr" ng-model='objForm.coneType.type'/> Pyramid
                                     </td>
                                 </tr>
                             </table>
@@ -110,6 +117,12 @@
                                 <input type="range" value='0' class='numInp' id="radWidR" ng-model='objForm.radWid' min='0' max='500' />
                             </div>
                         </div>
+                        <div class="form-group" ng-if='objForm.objType==2 && objForm.coneType.type=="pyramid"'>
+                            <label class="control-label col-sm-4" for="radWidR">Number of Segments:</label>
+                            <div class="col-md-8 pull-right">{{objForm.coneType.numSegs||4}}
+                                <input type="range" value='4' class='numInp' id="numSegs" ng-model='objForm.coneType.numSegs' min='3' max='30' />
+                            </div>
+                        </div>
                         <!---ele-->
                         <div class="form-group">
                             <label class="control-label col-sm-4" for="h">Height:</label>
@@ -127,7 +140,7 @@
                             </div>
                         </div>
                         <!--cap stuff-->
-                        <div class="form-group" ng-if='objForm.type!==0'>
+                        <div class="form-group" ng-if='objForm.type!==0 && objForm.coneType.type=="cone"'>
                             <label class="control-label col-sm-4">Cap object?: </label>
                             <div class="col-md-8 pull-right">
                                 <input type="checkbox" value='0' class='numInp' id="isCap" ng-model='objForm.cap.isCapped' />
@@ -257,7 +270,7 @@
                 </div>
             </div>
         </div>
-        <div id='bgForm' class='panel panel-default col-md-6 panelBg draggable' ng-show='bgShow' >
+        <div id='bgForm' class='panel panel-default col-md-6 panelBg draggable' ng-show='bgShow'>
             <div class='panel-heading'>Scene Options</div>
             <div class='panel-body'>
                 <div class="form-group">
@@ -351,7 +364,7 @@
         <div id='bg'>
         </div>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script src='https://code.jquery.com/ui/1.11.4/jquery-ui.min.js'/></script>
+        <script src='https://code.jquery.com/ui/1.11.4/jquery-ui.min.js' /></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
         <script src='bootbox.min.js'></script>
