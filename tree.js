@@ -13,6 +13,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.saveTxt = '';
     $scope.prevMode = false;
     $scope.theTitle = 'Untitled';
+    $scope.loadData = []; //holds the data to be loaded temporarily
     $scope.bgForm = {
         hue: 0,
         sat: 0,
@@ -375,17 +376,35 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.drawTree = function(par) {
         //first one will be main+Tree, or #mainTree. If this is first one, clear it
+            var fullParent = par;
         if (par == 'main') {
+            fullParent = '#main';
             $('#mainTree').html('');
+        } else {
+            for (var q = 0; q < $scope.objs.length; q++) {
+                if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==0){
+                    //boxParent
+                    fullParent = '#boxParent'+fullParent;
+                } else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==1){
+                    //circ
+                    fullParent = '#circParent'+fullParent;
+                }else if ($scope.objs[q].idInfo == par && $scope.objs[q].objType==2){
+                    //cone
+                    fullParent = '#coneParent'+fullParent;
+                }
+            }
+            console.log(fullParent,'is the parent')
         }
         //now deal with dem rowdy kidz
         var kidsToScan = []; //list of kids to recurse thru
+        //find the parent's full name
         $scope.objs.forEach(function(elToCheck) {
-            if (elToCheck.par == '#' + par) {
+            if (elToCheck.par == fullParent) {
                 //is a child
                 kidsToScan.push(elToCheck.idInfo);
             }
         });
+        console.log('kids', kidsToScan, 'for parent', par)
         kidsToScan.forEach(function(elToTree) {
             //tree the elements
             var parentTargId = par + 'Tree';
@@ -400,15 +419,17 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             el.innerHTML = elToTree;
             el.appendChild(closeBut);
             document.getElementById(parentTargId).appendChild(el);
-            $compile(el)($scope)
-                //now recurse thru, and repeat this process for the kid
+            $compile(el)($scope);
+            //now recurse thru, and repeat this process for the kid
             $scope.drawTree(elToTree);
-        })
-    }
+        });
+    };
     $scope.delEl = function(item) {
         item = item.substr(0, item.length - 4)
         for (var q = 0; q < $scope.objs.length; q++) {
+            //loop thru all items to find the correct item.
             if ($scope.objs[q].idInfo == item) {
+                //found it!
                 var remObj = $scope.objs.splice(q, 1)[0];
                 $scope.parentList.splice(q, 1);
                 var delObj = '';
@@ -420,6 +441,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     delObj = '#coneParent' + remObj.idInfo;
                 }
                 $(delObj).remove();
+                //now loop thru all items again to see if any children exist
+                for (var n = 0; n < $scope.objs.length; n++) {
+                    if ($scope.objs[n].par == delObj) {
+                        //if this is a child of the previously deleted obj, delete it
+                        $scope.delEl($scope.objs[n].idInfo);
+                    }
+                }
             }
         }
         $scope.drawTree('main');
@@ -450,7 +478,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.rem = false;
         $scope.saving = false;
         $scope.bgShow = false;
-    }
+    };
     $scope.loadDecode = function(dataToLoad) {
         //NEED ERR CHECK TO MAKE SURE ARR!
         console.log('data', dataToLoad)
@@ -464,17 +492,19 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     $scope.bgForm = parsedStuff.shift(); //take off the first item, which is the bgForm;
                     console.log('after bg stuff removed:', parsedStuff);
                     $scope.theTitle = parsedStuff.shift(); //take off the second item, which is the title;
+                    //at this point, we have a copy of the info of the original $scope.objs. 
                     console.log('title', $scope.theTitle);
                     $scope.updateCol(0, 1);
                     $scope.chTitle();
                     $scope.$digest();
-                    angular.copy(parsedStuff, $scope.objs);
+                    $scope.loadData = parsedStuff;
                     $('#main').html('');
                     $('#mainTree').html('');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
                     $scope.loadScene();
                     $scope.showLoad();
                     $scope.$apply();
+                    $scope.loadData = [];
                 }
             });
         } catch (e) {
@@ -491,7 +521,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     }
     $scope.loadScene = function() {
         //function reloads a scene
-        $scope.objs.forEach(function(loadObj) {
+        $scope.loadData.forEach(function(loadObj) {
             var toMake = {
                 x: loadObj.x,
                 y: loadObj.y,
@@ -507,9 +537,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 objType: loadObj.objType,
                 custMove: loadObj.custMove,
                 cap: loadObj.cap
-            }
+            };
             $scope.makeObj(toMake, 1);
         });
+        $('#loadBox').val('');
     };
     $scope.$watch("objForm", function(frmEd) {
         $scope.editObj(frmEd);
@@ -722,8 +753,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.moveEm ? $scope.moveEm = false : $scope.moveEm = true;
             $scope.custMoveMode = false;
             $scope.$digest();
-        } else if (document.activeElement.type!='text' && document.activeElement.tagName.toLowerCase()!='textarea') {
-            console.log(e.which )
+        } else if (document.activeElement.type != 'text' && document.activeElement.tagName.toLowerCase() != 'textarea') {
+            console.log(e.which)
             if (e.which == 77) {
                 $scope.custMoveMode ? $scope.custMoveMode = false : $scope.custMoveMode = true;
                 $scope.moveEm = false;
@@ -741,7 +772,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             }
             $scope.$digest();
         }
-        console.log(document.activeElement.type!='text' && document.activeElement.tagName.toLowerCase()!='textarea')
+        console.log(document.activeElement.type != 'text' && document.activeElement.tagName.toLowerCase() != 'textarea')
     }
     $scope.trashScene = function() {
         if ($scope.objs.length) {
@@ -796,4 +827,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             containment: [0, 0, $(window).width() / 2, $(window).height() / 2]
         });
     });
+    $scope.data = function() {
+        console.log($scope.objs);
+    }
 });
