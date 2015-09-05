@@ -63,8 +63,7 @@
  - Press M to toggle Custom Movement Mode. 
 
 ##Upcoming Features
- - New polyhedra: Pyramids, others! 
- - Better verification! 
+ - Stay tuned!
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);
