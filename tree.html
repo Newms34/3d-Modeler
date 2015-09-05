@@ -22,7 +22,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Brand</a>
+                    <div class="navbar-brand" ng-click='data()'>DaveModeler</div>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -31,7 +31,7 @@
                         <li><a href="#" ng-click='toggleWind(1);' class='menTog menuBtns' ng-class="{'btn-warning':rem}">&#127796;VIEW TREE/REMOVE OBJECT<span class="sr-only" ng-if='rem'>(current)</span></a></li>
                         <li><a href="#" ng-click='showLoad();' class='menTog menuBtns' ng-class="{'btn-info':loading}">&#128194;LOAD SCENE<span class="sr-only" ng-if='loading'>(current)</span></a></li>
                         <li><a href="#" ng-click='encodeSave();' class='menTog menuBtns' ng-class="{'btn-primary':saving}">&#128190;SAVE SCENE<span class="sr-only" ng-if='saving'>(current)</span></a></li>
-                        <li><a href="#" ng-click='showBg();' class='menTog menuBtns' ng-class="{'btn-default':bgShow}">&#128506;SCENE OPTIONS<span class="sr-only" ng-if='bgShow'>(current)</span></a></li>
+                        <li><a href="#" ng-click='showBg();' class='menTog menuBtns' ng-class="{'btn-default':bgShow}">&#9997;SCENE OPTIONS<span class="sr-only" ng-if='bgShow'>(current)</span></a></li>
                         <li class='fake-btn'><span ng-if='moveEm==false && custMoveMode==false'>&#10060;MOVE MODE: None</span><span ng-if='moveEm==true'>&#8635;MOVE MODE: Rotate</span><span ng-if='custMoveMode==true'>🏃MOVE MODE: Custom</span></li>
                         <li id='trash' title='Trash scene' ng-click='trashScene()'></li>
                     </ul>

@@ -240,3 +240,14 @@ input[type=range]#hue::-webkit-slider-runnable-track {
 .panel-heading {
     cursor:move;
 }
+.navbar-brand{
+    background-color: #fff;
+    background-image:url('brand.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition-duration:.5s;
+}
+.navbar-brand:hover{
+    background-position: right;
+    background-color: #fff!important;
+}
