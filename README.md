@@ -69,4 +69,4 @@
  - [Me (David Newman)](https://github.com/Newms34);
 
 Footnotes
-* - Basically, think of a framed picture. The borders of the picture - the frame sides - are trapezoids. To make a triangle, we make the size of the actual "picture" in our example 0x0 - i.e., non-existant. We then define the bottom border as our desired color, and the left and right borders as transparent. The result? An upwards-pointing triangle
+ 1. Basically, think of a framed picture. The borders of the picture - the frame sides - are trapezoids. To make a triangle, we make the size of the actual "picture" in our example 0x0 - i.e., non-existant. We then define the bottom border as our desired color, and the left and right borders as transparent. The result? An upwards-pointing triangle
