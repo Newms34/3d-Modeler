@@ -856,7 +856,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
     }
     $scope.chTitle = function() {
-        console.log(document.title)
         loadUnloadFact.changeTit($scope.theTitle);
     }
     $(function() {
