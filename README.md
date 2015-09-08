@@ -49,7 +49,7 @@
  ----
  Q: Why do cones not allow textures?
  
- A: Because of the way triangles are drawn with CSS (hint: it's already a bit of a trick), the triangles can't really have background textures. Sorry!
+ A: Because of the way triangles are drawn with CSS (hint: it's already a bit of a trick)<sup>*</sup>, the triangles can't really have background textures. Sorry!
 
 ##New Features
  - Updated object textures. Objects materials can now glow, be transparent, be shiny, and have image textures (except for cones).
@@ -67,5 +67,6 @@
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);
- 
 
+Footnotes
+* - Basically, think of a framed picture. The borders of the picture - the frame sides - are trapezoids. To make a triangle, we make the size of the actual "picture" in our example 0x0 - i.e., non-existant. We then define the bottom border as our desired color, and the left and right borders as transparent. The result? An upwards-pointing triangle

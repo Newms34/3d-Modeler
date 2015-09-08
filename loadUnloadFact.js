@@ -244,7 +244,7 @@ app.factory('loadUnloadFact', function($rootScope) {
         changeTit: function(tit) {
             //change the page title.
             var t = setTimeout(function() {
-                document.title = tit;
+                document.title = tit+' - DaveModeler';
             }, 1000);
         },
         custMoveDo: function(arr, x, y) {
@@ -252,7 +252,7 @@ app.factory('loadUnloadFact', function($rootScope) {
             x = (100 * x / $(window).width()) - 50;
             y = (100 * y / $(window).height()) - 50;
             for (var n = 0; n < arr.length; n++) {
-                console.log(arr[n].custMove.active)
+                console.log(arr[n].custMove.active);
                 if (arr[n].custMove.active) {
                     //ignore all the following if this isn't active;
                     //construct obj's id
@@ -270,7 +270,7 @@ app.factory('loadUnloadFact', function($rootScope) {
                         x: arr[n].rX,
                         y: arr[n].rY,
                         z: arr[n].rZ
-                    }
+                    };
                     var adjX = x * arr[n].custMove.xMag;
                     var adjY = y * arr[n].custMove.yMag;
                     //x takes precedence 
