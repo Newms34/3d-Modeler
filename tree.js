@@ -1,5 +1,5 @@
 var app = angular.module("modeler", []);
-var tempWAdj=20;
+var tempWAdj = 20;
 
 app.controller("MainController", function($scope, $window, $compile, loadUnloadFact) {
     $scope.adding = false;
@@ -25,7 +25,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         green: 255,
         blue: 255,
         filter: 'none',
-        filtAmt: 0
+        filtAmt: 0,
+        is3d: 'false'
     };
     $scope.ackIe = false;
     $scope.toggleWind = function(which) {
@@ -98,7 +99,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
     };
 
-    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType, cap, custMove) {
+    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType, cap, custMove,coneType) {
         //constructor for objects.
         this.x = x; //xpos
         this.y = y; //ypos
@@ -114,6 +115,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.objType = objType; //boolean
         this.cap = cap;
         this.custMove = custMove;
+        this.coneType = coneType;
     }
     $scope.announceDone = function(frm) {
         if (frm.objType == 0) {
@@ -199,13 +201,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
             frm.d = frm.d || 0;
-            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove));
-            if (frm.objType == 2 && frm.coneType.type == 'pyramid') {
-                frm.radWidFull = [frm.radWid, frm.coneType.numSegs];
+            console.log('FORM:',frm)
+            if (parseInt(frm.objType) == 2 && frm.coneType.type == 'pyramid') {
+                console.log('pyramid!------')
+                frm.radWidFull = [parseInt(frm.radWid), frm.coneType.numSegs];
                 frm.cap.isCapped = false;
             } else {
                 frm.radWidFull = frm.radWid;
             }
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove,frm.coneType));
             //note that frm.custMove, the custom movement thing, does not need to be fed into the constructors.
             if (frm.objType == 0) {
                 //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
@@ -359,8 +363,15 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
 
         if ($scope.moveEm) {
             $('#main').css('transform', 'rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
+            //translateX(20px) rotateY(20deg)
+            $('#main3DR').css('transform', 'translateZ(5px) translateX(5px) rotateY(-5deg) rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
+            $('#main3DL').css('transform', 'translateZ(5px) translateX(-5px) rotateY(5deg) rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
         } else if ($scope.custMoveMode) {
-            loadUnloadFact.custMoveDo($scope.objs, e.x, e.y);
+            if ($scope.is3d) {
+
+            } else {
+                loadUnloadFact.custMoveDo($scope.objs, e.x, e.y);
+            }
         }
     }
     $scope.scanForKids = function(par) {
@@ -795,7 +806,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             }
             $scope.$digest();
         }
-        console.log(document.activeElement.type != 'text' && document.activeElement.tagName.toLowerCase() != 'textarea')
     }
     $scope.trashScene = function() {
         if ($scope.objs.length) {
@@ -855,5 +865,37 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     });
     $scope.data = function() {
         console.log($scope.objs);
+    }
+    $scope.update3d = function(status){
+        if (status){
+            //wipe 3d window, replace contents with those of main window
+            var copy3d = $('#main').html();
+            copy3dL = copy3d.replace(/id="/ig,'id="3DL');
+            copy3dR = copy3d.replace(/id="/ig,'id="3DR');
+            $('#main3DL').html(copy3dL);
+            $('#main3DR').html(copy3dR);
+            //recolor all divs R:
+            var toColorR = $('#main3DR div');
+            for (var i=0;i<toColorR.length;i++){
+                var colArray = $(toColorR[i]).css('background-color');
+                colArray = colArray.replace('rgb(','');
+                colArray = colArray.replace(')','');
+                colArray = colArray.split(', ');
+                var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
+                $(toColorR[i]).css('background-color','hsl(0,'+HSLR[1]+'%,'+HSLR[2]+'%)');
+            }
+            var toColorL = $('#main3DR div');
+            for (var i=0;i<toColorL.length;i++){
+                var colArray = $(toColorL[i]).css('background-color');
+                colArray = colArray.replace('rgb(','');
+                colArray = colArray.replace(')','');
+                colArray = colArray.split(', ');
+                var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
+                $(toColorL[i]).css('background-color','hsl(180,'+HSLR[1]+'%,'+HSLR[2]+'%)');
+            }
+        }else{
+            $('#main3DR').html('');
+            $('#main3DL').html('');
+        }
     }
 });

@@ -301,7 +301,7 @@
                         <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='bgForm.rgb=="tex"'>
                             <div class="col-md-6">
                                 Texture:
-                                <input type="text" placeholder='Enter an image url here!' class='' id="texture" ng-model='bgForm.img' ng-change='updateImg(1)' ;/>
+                                <input type="text" placeholder='Enter an image url here!' class='' id="texture" ng-model='bgForm.img' ng-change='updateCol(0,1)' ;/>
                             </div>
                         </div>
                         <!--for hsv mode-->
@@ -358,9 +358,23 @@
                         <input type="range" ng-value='0' min='0' max='1' class='numInp' ng-model='bgForm.filtAmt' step='0.05' ng-change='updateCol(0,1)' />
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12">Scene Filter:</label>
+
+                        <div class='col-md-6'>Anaglyph 3D On:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='true' class='numInp' id="anaOn" ng-model='bgForm.is3d' ng-change='update3d(1)'/>
+                        </div>
+                        <div class='col-md-6'>Anaglyph 3D Off:</div>
+                        <div class='col-md-6'>
+                            <input type="radio" value='false' class='numInp' id="anaOff" ng-model='bgForm.is3d' ng-change='update3d(0)'/>
+                        </div>
+                </div>
             </div>
         </div>
         <div id='main'></div>
+        <div id='main3DR'></div>
+        <div id='main3DL'></div>
         <div id='bg'>
         </div>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>

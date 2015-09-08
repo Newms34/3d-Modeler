@@ -35,6 +35,30 @@ body {
     transform-origin: 50% 50%;
     z-index: -99;
 }
+#main3DR {
+    transform-style: preserve-3d;
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    width: 1%;
+    height: 1%;
+    transform:translateX(5px) rotateY(15deg);
+    transform-origin: 50% 50%;
+    z-index: -95;
+    opacity:.4;
+}
+#main3DL {
+    transform-style: preserve-3d;
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    width: 1%;
+    height: 1%;
+    transform:translateX(-5px) rotateY(-15deg);
+    transform-origin: 50% 50%;
+    z-index: -95;
+    opacity:.4;
+}
 
 .cap {
     transform-style: preserve-3d;
