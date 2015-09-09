@@ -883,7 +883,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 colArray = colArray.replace(')','');
                 colArray = colArray.split(', ');
                 var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
-                $(toColorR[i]).css('background-color','hsl(0,'+HSLR[1]+'%,'+HSLR[2]+'%)');
+                $(toColorR[i]).css('background-color','hsl(0,100%,'+HSLR[2]+'%)');
             }
             var toColorL = $('#main3DR div');
             for (var i=0;i<toColorL.length;i++){
@@ -891,8 +891,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 colArray = colArray.replace('rgb(','');
                 colArray = colArray.replace(')','');
                 colArray = colArray.split(', ');
-                var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
-                $(toColorL[i]).css('background-color','hsl(180,'+HSLR[1]+'%,'+HSLR[2]+'%)');
+                var HSLL = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
+                $(toColorL[i]).css('background-color','hsl(180,100%,'+HSLL[2]+'%)');
             }
         }else{
             $('#main3DR').html('');

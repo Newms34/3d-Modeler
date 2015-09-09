@@ -275,3 +275,6 @@ input[type=range]#hue::-webkit-slider-runnable-track {
     background-position: right;
     background-color: #fff!important;
 }
+.lab{
+    color:#000;
+}

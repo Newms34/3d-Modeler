@@ -67,7 +67,7 @@
                             <label class="control-label col-sm-4">Object Type</label>
                             <!-- <div class="col-md-6"> -->
                             <table class='table'>
-                                <tr class='info'>
+                                <tr class='info lab'>
                                     <td>
                                         <input type="radio" value='0' class='numInp' id="pikCube" ng-model='objForm.objType' ng-change='coneSafe()'> Cube
                                         <br/>
@@ -76,11 +76,11 @@
                                         <input type="radio" value='2' class='numInp' id="pikCon" ng-model='objForm.objType' ng-change='coneSafe()' /> Cone/Pyramid
                                         <br/>
                                     </td>
-                                    <td class='success' style='padding:5px;'>
+                                    <td class='success lab' style='padding:5px;'>
                                         <img src='fig{{objForm.objType}}.jpg' id='objImg' />
                                     </td>
                                 </tr>
-                                <tr ng-show='objForm.objType==2' class='success'>
+                                <tr ng-show='objForm.objType==2' class='success lab'>
                                     <td>What type of cone?:<br/>
                                         <input type="radio" value='cone' class='numInp' id="pikConCon" ng-model='objForm.coneType.type'/> Cone
                                         <br/>
@@ -169,7 +169,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" id='colLab' style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%);min-height:200px;'>
+                            <div class="form-group lab" id='colLab' style='background-color:hsl({{objForm.color.hue||0}},{{objForm.color.sat||0}}%,{{objForm.color.val||0}}%);min-height:200px;'>
                                 <label class="control-label col-sm-3" style='background-color:#fff;margin-top:5px;'>Color Lab</label>
                                 <div class="col-md-8 pull-right" style='background-color:#fff' ng-show='objForm.color.rgb=="tex"'>
                                     <div class="col-md-6">
