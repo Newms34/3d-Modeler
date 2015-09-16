@@ -503,6 +503,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.saveObj.unshift($scope.theTitle || 'Untitled');
             $scope.saveObj.unshift($scope.bgForm);
             var saveOut = JSON.stringify($scope.saveObj);
+            loadUnloadFact.setUrlCode(saveOut);
             //now encode the whole thing!
             saveOutEnc = window.btoa(saveOut);
             $scope.saveTxt = saveOutEnc;
@@ -898,4 +899,24 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $('#main3DL').html('');
         }
     }
+    //this stuff here will eventually monitor the speed, and alert the user if we're too slow.
+    $scope.monitorStart = new Date().getTime();
+    $scope.monitorEnd = new Date().getTime();
+    $scope.maxFrameDif=0;
+    $scope.monitor = function(){
+        window.requestAnimationFrame($scope.monitor)
+        $scope.monitorEnd = new Date().getTime();
+        var dif = $scope.monitorEnd - $scope.monitorStart;
+        if ($scope.maxFrameDif<dif){
+            $scope.maxFrameDif = dif;
+            console.log('Maximum frame time:',dif);
+        }
+        $scope.monitorStart = $scope.monitorEnd;
+    };
+    $scope.monitor();
+
+    window.onload = function(){
+        loadUnloadFact.getUrlCode();
+    }
+
 });
