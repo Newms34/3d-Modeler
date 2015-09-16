@@ -10,6 +10,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.saving = false;
     $scope.rem = false;
     $scope.bgShow = false;
+    $scope.halp=false;
     $scope.totals = {};
     $scope.saveTxt = '';
     $scope.prevMode = false;
@@ -32,7 +33,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.toggleWind = function(which) {
         if (!which) {
             //show add form
-            $('#mainTree').html('');
+            $('#mainTree').html('Nothing yet!');
             $scope.rem = false;
             $scope.loading = false;
             $scope.bgShow = false;
@@ -50,7 +51,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             if ($scope.rem) {
                 $scope.drawTree('main');
             } else {
-                $('#mainTree').html('');
+                $('#mainTree').html('Nothing yet!');
             }
         }
 
@@ -99,7 +100,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
     };
 
-    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType, cap, custMove,coneType) {
+    $scope.objConst = function(x, y, radWid, h, d, par, rX, rY, rZ, color, idInfo, objType, cap, custMove, coneType) {
         //constructor for objects.
         this.x = x; //xpos
         this.y = y; //ypos
@@ -201,7 +202,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.makeObj = function(frm, prev) {
         if (frm.parent) {
             frm.d = frm.d || 0;
-            console.log('FORM:',frm)
+            console.log('FORM:', frm)
             if (parseInt(frm.objType) == 2 && frm.coneType.type == 'pyramid') {
                 console.log('pyramid!------')
                 frm.radWidFull = [parseInt(frm.radWid), frm.coneType.numSegs];
@@ -209,7 +210,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             } else {
                 frm.radWidFull = frm.radWid;
             }
-            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove,frm.coneType));
+            $scope.objs.push(new $scope.objConst(frm.x, frm.y, frm.radWidFull, frm.h, frm.d, frm.parent, frm.rX, frm.rY, frm.rZ, frm.color, frm.idInfo, frm.objType, frm.cap, frm.custMove, frm.coneType));
             //note that frm.custMove, the custom movement thing, does not need to be fed into the constructors.
             if (frm.objType == 0) {
                 //x, y, w, h, d, p, rX, rY, rZ, color, idInfo
@@ -417,7 +418,12 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         var fullParent = par;
         if (par == 'main') {
             fullParent = '#main';
-            $('#mainTree').html('');
+            if (!$scope.objs.length){
+                $('#mainTree').html('Nothing yet!');    
+            }else {
+                $('#mainTree').html('');
+            }
+            
         } else {
             for (var q = 0; q < $scope.objs.length; q++) {
                 if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 0) {
@@ -538,7 +544,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     $scope.$digest();
                     $scope.loadData = parsedStuff;
                     $('#main').html('');
-                    $('#mainTree').html('');
+                    $('#mainTree').html('Nothing yet!');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
                     $scope.loadScene();
                     $scope.showLoad();
@@ -782,14 +788,17 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.$digest();
         } else if (e.which == 13 && $scope.adding) {
             //adding, user pressed enter, so submit!
-            console.log('triggering form!')
             $('#addObjForm').submit();
         } else if (e.which == 82) {
             $scope.moveEm ? $scope.moveEm = false : $scope.moveEm = true;
             $scope.custMoveMode = false;
             $scope.$digest();
+        }else if(e.which==112){
+            //help win
+            e.preventDefault();
+            $scope.halp?$scope.halp=false:$scope.halp=true;
+            $scope.$digest();
         } else if (document.activeElement.type != 'text' && document.activeElement.tagName.toLowerCase() != 'textarea') {
-            console.log(e.which)
             if (e.which == 77) {
                 $scope.custMoveMode ? $scope.custMoveMode = false : $scope.custMoveMode = true;
                 $scope.moveEm = false;
@@ -849,7 +858,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                             numSegs: 5
                         }
                     };
-                    $('#mainTree').html('');
+                    $('#mainTree').html('Nothing yet!');
                     $('#main').html('');
                     $scope.theTitle = 'untitled';
                 }
@@ -860,45 +869,71 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         loadUnloadFact.changeTit($scope.theTitle);
     }
     $(function() {
-        $('.panel').draggable({
+        $('.draggable').draggable({
             containment: [0, 0, $(window).width() / 2, $(window).height() / 2]
         });
     });
     $scope.data = function() {
         console.log($scope.objs);
     }
-    $scope.update3d = function(status){
-        if (status){
-            //wipe 3d window, replace contents with those of main window
+    $scope.update3d = function(status) {
+        if (status) {
+            //wipe 3d windows (L&R), replace contents with those of main window
             var copy3d = $('#main').html();
-            copy3dL = copy3d.replace(/id="/ig,'id="3DL');
-            copy3dR = copy3d.replace(/id="/ig,'id="3DR');
+            copy3dL = copy3d.replace(/id="/ig, 'id="3DL');
+            copy3dR = copy3d.replace(/id="/ig, 'id="3DR');
             $('#main3DL').html(copy3dL);
             $('#main3DR').html(copy3dR);
-            //recolor all divs R:
+            //recolor all divs R (right, red):
             var toColorR = $('#main3DR div');
-            for (var i=0;i<toColorR.length;i++){
-                var colArray = $(toColorR[i]).css('background-color');
-                colArray = colArray.replace('rgb(','');
-                colArray = colArray.replace(')','');
-                colArray = colArray.split(', ');
-                var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
-                $(toColorR[i]).css('background-color','hsl(0,100%,'+HSLR[2]+'%)');
+            for (var i = 0; i < toColorR.length; i++) {
+                if ($(toColorR[i]).attr('class') == 'conePiece') {
+                    //cone!
+                    var colArray = $(toColorR[i]).css('border-bottom-color');
+                    //prepare the color vals to be sent to factory.
+                    colArray = colArray.replace('rgb(', '');
+                    colArray = colArray.replace(')', '');
+                    colArray = colArray.split(', ');
+                    var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]), parseInt(colArray[1]), parseInt(colArray[2]));
+                    $(toColorR[i]).css('border-bottom-color', 'hsl(0,' + HSLR[1] + '%,' + HSLR[2] + '%)');
+                    $(toColorR[i]).css('background-color', 'hsl(0,' + HSLR[1] + '%,' + HSLR[2] + '%)');
+                } else {
+                    //not a cone!
+                    var colArray = $(toColorR[i]).css('background-color');
+                    colArray = colArray.replace('rgb(', '');
+                    colArray = colArray.replace(')', '');
+                    colArray = colArray.split(', ');
+                    var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]), parseInt(colArray[1]), parseInt(colArray[2]));
+                    console.log('A color in right (red) side is: ',HSLR)
+                    $(toColorR[i]).css('background-color', 'hsl(0,' + HSLR[1] + '%,' + Math.min(100,1.25*HSLR[2]) + '%)');
+                }
             }
-            var toColorL = $('#main3DR div');
-            for (var i=0;i<toColorL.length;i++){
-                var colArray = $(toColorL[i]).css('background-color');
-                colArray = colArray.replace('rgb(','');
-                colArray = colArray.replace(')','');
-                colArray = colArray.split(', ');
-                var HSLL = loadUnloadFact.rgbToHsl(parseInt(colArray[0]),parseInt(colArray[1]),parseInt(colArray[2]));
-                $(toColorL[i]).css('background-color','hsl(180,100%,'+HSLL[2]+'%)');
+            //recolor all divs L (left, blue):
+            var toColorL = $('#main3DL div');
+            for (var i = 0; i < toColorL.length; i++) {
+                if ($(toColorL[i]).attr('class') == 'conePiece') {
+                    var colArray = $(toColorL[i]).css('border-bottom-color');
+                    //prepare the color vals to be sent to factory.
+                    colArray = colArray.replace('rgb(', '');
+                    colArray = colArray.replace(')', '');
+                    colArray = colArray.split(', ');
+                    var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]), parseInt(colArray[1]), parseInt(colArray[2]));
+                    $(toColorL[i]).css('border-bottom-color', 'hsl(180,' + HSLR[1] + '%,' + HSLR[2] + '%)');
+                } else {
+                    var colArray = $(toColorL[i]).css('background-color');
+                    colArray = colArray.replace('rgb(', '');
+                    colArray = colArray.replace(')', '');
+                    colArray = colArray.split(', ');
+                    var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]), parseInt(colArray[1]), parseInt(colArray[2]));
+                    $(toColorL[i]).css('background-color', 'hsl(180,' + HSLR[1] + '%,' + HSLR[2] + '%)');
+                }
             }
-        }else{
+        } else {
             $('#main3DR').html('');
             $('#main3DL').html('');
         }
     }
+
     //this stuff here will eventually monitor the speed, and alert the user if we're too slow.
     $scope.monitorStart = new Date().getTime();
     $scope.monitorEnd = new Date().getTime();
@@ -914,9 +949,13 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.monitorStart = $scope.monitorEnd;
     };
     $scope.monitor();
-
     window.onload = function(){
         loadUnloadFact.getUrlCode();
     }
-
+    if (localStorage && !localStorage.daveModeler){
+        bootbox.alert('Hey! Looks like you haven\'t been here before. Press <b>F1</b> for some help, if you get lost!',function(e){
+            localStorage.daveModeler = true;
+        });
+    }
 });
+

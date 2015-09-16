@@ -84,7 +84,9 @@
                                     <td>What type of cone?:<br/>
                                         <input type="radio" value='cone' class='numInp' id="pikConCon" ng-model='objForm.coneType.type'/> Cone
                                         <br/>
-                                        <input type="radio" value='pyramid' class='numInp' id="pikConPyr" ng-model='objForm.coneType.type'/> Pyramid
+                                        <input type="radio" value='cone' class='numInp' id="pikConCon" ng-model='objForm.coneType.type' /> Cone
+                                        <br/>
+                                        <input type="radio" value='pyramid' class='numInp' id="pikConPyr" ng-model='objForm.coneType.type' /> Pyramid
                                     </td>
                                 </tr>
                             </table>
@@ -360,15 +362,68 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-12">Scene Filter:</label>
-
-                        <div class='col-md-6'>Anaglyph 3D On:</div>
-                        <div class='col-md-6'>
-                            <input type="radio" value='true' class='numInp' id="anaOn" ng-model='bgForm.is3d' ng-change='update3d(1)'/>
-                        </div>
-                        <div class='col-md-6'>Anaglyph 3D Off:</div>
-                        <div class='col-md-6'>
-                            <input type="radio" value='false' class='numInp' id="anaOff" ng-model='bgForm.is3d' ng-change='update3d(0)'/>
-                        </div>
+                    <div class='col-md-6'>Anaglyph 3D On:</div>
+                    <div class='col-md-6'>
+                        <input type="radio" value='true' class='numInp' id="anaOn" ng-model='bgForm.is3d' ng-change='update3d(1)' />
+                    </div>
+                    <div class='col-md-6'>Anaglyph 3D Off:</div>
+                    <div class='col-md-6'>
+                        <input type="radio" value='false' selected class='numInp' id="anaOff" ng-model='bgForm.is3d' ng-change='update3d(0)' />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='helpWin' ng-show='halp'>
+            <div class='panel panel-info col-md-6 panelBg'>
+                <div class='panel-heading'>Help</div>
+                <div class='panel-body'>
+                    <hr/> Confused? Don't be! Have a handy-dandy cheat-sheet!
+                    <hr/>
+                    <div class='helpContTit'>Contents</div>
+                    <ul class='helpContList'>
+                        <li>About</li>
+                        <li>Basic Use</li>
+                        <li>Some Notes</li>
+                        <li>Useful Key Commands</li>
+                    </ul>
+                    <div class='helpCont'>
+                        <div class='helpContTit'>About</div>
+                        DaveModeler! is an experiment in 3d modeling, written entirely with HTML5-native CSS. It was written by me (<a href='https://www.linkedin.com/in/newms34'>Dave Newman</a>). The code's publically available at <a href='https://github.com/Newms34/3d-Modeler'>my github repository</a>, if you're the coding-type too! I'm constantly updating it, so check back often.
+                    </div>
+                    <div class='helpCont'>
+                        <div class='helpContTit'>Basic Use</div>
+                        <ul>
+                            <li>To create a new object, click <b>ADD OBJECT</b>. Pick a parent object from the list, and then customize your object.</li>
+                            <li>Remember that after you've named your object, you can always click the blue [&#128269; See it!] button to preview the object (and make placing it easier)!</li>
+                            <li>Make sure to click [&#10133; Make it!] to finalize your object and place it in the scene.</li>
+                            <li>To view a hierarchy of objects in your scene, or to remove an object, click the <b>VIEW TREE/REMOVE OBJECT</b>.</li>
+                            <li>Wanna save your awesome creation? Click the <b>SAVE SCENE</b> button and copy the code down somewhere!</li>
+                            <li>Wanna see your friend's awesome creation? Click the <b>LOAD SCENE</b> button and paste in the code your friend sent you!</li>
+                            <li>Plain white backgrounds are boring! 2D is boring! Go ahead and click that <b>SCENE OPTIONS</b> button and make your scene a little more interesting!</li>
+                        </ul>
+                    </div>
+                    <div class='helpCont'>
+                        <div class='helpContTit'>Some Notes</div>
+                        <ul>
+                            <li><b>Music of the Spheres!</b> - Because of how CSS objects are drawn (hint: it's polygons!), drawing spheres makes your computer very sad. We don't like sad computers. So, no sphers.Sorry!</li>
+                            <li><b>For Science!</b> - This app's very experimental. That means you get to see all the cool new stuff first (yay)! That also means it'll occasionally break (boo). See something horribly wrong? <a href='mailto:newms3450@gmail.com'>Lemme know!</a></li>
+                            <li><b>It's All Greek To Me</b> - The save code actually isn't Greek, but a base-64 encoding of a JavaScript Array. </li>
+                        </ul>
+                    </div>
+                    <div class='helpCont'>
+                        <div class='helpContTit'>Useful Key Commands</div>
+                        <ul>
+                            <li><b>F1</b> - Show Help Window (this one!)</li>
+                            <li><b>A</b> - Toggle Add Object Window</li>
+                            <li><b>T</b> - Toggle View Tree/Remove Item Window</li>
+                            <li><b>L</b> - Toggle Load Scene Window</li>
+                            <li><b>S</b> - Toggle Save Scene Window</li>
+                            <li><b>O</b> - Toggle Scene Options Window</li>
+                            <li><b>M</b> - Toggle Move Mode: Custom</li>
+                            <li><b>R</b> - Toggle Move Mode: Rotate</li>
+                            <li><b>Esc</b> - Close any open windows</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
