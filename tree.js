@@ -33,7 +33,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.toggleWind = function(which) {
         if (!which) {
             //show add form
-            $('#mainTree').html('');
+            $('#mainTree').html('Nothing yet!');
             $scope.rem = false;
             $scope.loading = false;
             $scope.bgShow = false;
@@ -51,7 +51,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             if ($scope.rem) {
                 $scope.drawTree('main');
             } else {
-                $('#mainTree').html('');
+                $('#mainTree').html('Nothing yet!');
             }
         }
 
@@ -418,7 +418,12 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         var fullParent = par;
         if (par == 'main') {
             fullParent = '#main';
-            $('#mainTree').html('');
+            if (!$scope.objs.length){
+                $('#mainTree').html('Nothing yet!');    
+            }else {
+                $('#mainTree').html('');
+            }
+            
         } else {
             for (var q = 0; q < $scope.objs.length; q++) {
                 if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 0) {
@@ -538,7 +543,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     $scope.$digest();
                     $scope.loadData = parsedStuff;
                     $('#main').html('');
-                    $('#mainTree').html('');
+                    $('#mainTree').html('Nothing yet!');
                     //we clear the tree element, but we don't have to redraw it, since that gets redrawn anyway 
                     $scope.loadScene();
                     $scope.showLoad();
@@ -852,7 +857,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                             numSegs: 5
                         }
                     };
-                    $('#mainTree').html('');
+                    $('#mainTree').html('Nothing yet!');
                     $('#main').html('');
                     $scope.theTitle = 'untitled';
                 }
