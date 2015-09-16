@@ -60,10 +60,11 @@
  - Names included in loaded scenes!
  - New Movement Modes: During object creation, you can specify what the mouse does to an object!
  - Press R to toggle normal Rotation Mode. 
- - Press M to toggle Custom Movement Mode. 
+ - Press M to toggle Custom Movement Mode.
+ - Experimental anaglyphic 3d Mode (activate it in the Scene Options window) 
 
 ##Upcoming Features
- - Stay tuned!
+ - Feeling lost? How about a help window?
  
 ##Author 
  - [Me (David Newman)](https://github.com/Newms34);
