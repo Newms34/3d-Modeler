@@ -271,12 +271,35 @@ input[type=range]#hue::-webkit-slider-runnable-track {
     background-image:url('brand.jpg');
     background-size: contain;
     background-repeat: no-repeat;
-    transition-duration:.5s;
+    background-position: left;
 }
 .navbar-brand:hover{
     background-position: right;
     background-color: #fff!important;
+    animation: logoMove .5s linear 1;
+    -webkit-animation: logoMove .5s linear infinite alternate;
 }
+.lab{
+    color:#000;
+}
+
+@keyframes logoMove{
+    0% {
+        filter:blur(0px);
+        -webkit-filter:blur(0px);
+        background-position:left;
+    }
+    50% {
+        filter:blur(3px);
+        -webkit-filter:blur(3px);
+        background-position:center;
+    }
+    100%{
+        filter:blur(0px);
+        -webkit-filter:blur(0px);
+        background-position:right;
+    }
+
 #helpWin{
     z-index:99;
     position:absolute;

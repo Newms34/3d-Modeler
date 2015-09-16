@@ -286,6 +286,49 @@ app.factory('loadUnloadFact', function($rootScope) {
                     $(theId).css('transform', 'rotateX(' + totalRots.x + 'deg) rotateY(' + totalRots.y + 'deg) rotateZ(' + totalRots.z + 'deg)');
                 }
             }
+        },
+        getUrlCode:function(){
+            /*
+            basically, we truncate all the var names to create a shorter obj
+            replacement:
+            hue - hu
+            sat - st
+            val - vl
+            color - cl
+            img - im
+            red - rd
+            green - gr
+            blue - bl
+            filter - fl
+            filtAmt - fA
+            is3d - i3
+            radWid - rw
+            par - pa
+            gloPow - gl
+            trans - tr
+            spec - sp
+            objType - ot
+            cap - cp
+            isCapped - ic
+            custMove - cm
+            active - ac
+            coneType - ct
+            idInfo - id
+            xCont - xc
+            ycont - yc
+            xMag - xm
+            yMag - ym
+            type - ty
+            numSegs - ns
+            */
+            var currUrl = window.location.href;
+            console.log(currUrl.substring(currUrl.indexOf('?')+1));
+        },
+        setUrlCode:function(codeStr){
+            var beforeLength = codeStr.length;
+            codeStr = codeStr.replace(/"hue"/gi,'"hu"').replace(/"sat"/gi,'"st"').replace(/"val"/gi,'"vl"').replace(/"color"/gi,'"cl"').replace(/"img"/gi,'"im"').replace(/"red"/gi,'"rd"').replace(/"green"/gi,'"gr"').replace(/"blue"/gi,'"bl"').replace(/"blue"/gi,'"bl"').replace(/"filter"/gi,'"fl"').replace(/"filtAmt"/gi,'"fA"').replace(/"is3d"/gi,'"i3"').replace(/"radWid"/gi,'"rw"').replace(/"par"/gi,'"pa"').replace(/"gloPow"/gi,'"gl"').replace(/"trans"/gi,'"tr"').replace(/"spec"/gi,'"sp"').replace(/"objType"/gi,'"ot"').replace(/"cap"/gi,'"cp"').replace(/"isCapped"/gi,'"ic"').replace(/"custMove"/gi,'"cm"').replace(/"active"/gi,'"ac"').replace(/"coneType"/gi,'"ct"').replace(/"idInfo"/gi,'"id"').replace(/"xCont"/gi,'"xc"').replace(/"yCont"/gi,'"yc"').replace(/"xMag"/gi,'"xm"').replace(/"yMag"/gi,'"ym"').replace(/"type"/gi,'"ty"').replace(/"numSegs"/gi,'"ns"')
+            console.log(codeStr,beforeLength-codeStr.length,codeStr.length);
+            console.log(JSON.parse(codeStr))
         }
     };
 });
