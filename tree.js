@@ -10,7 +10,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     $scope.saving = false;
     $scope.rem = false;
     $scope.bgShow = false;
-    $scope.halp=false;
+    $scope.halp = false;
     $scope.totals = {};
     $scope.saveTxt = '';
     $scope.prevMode = false;
@@ -55,7 +55,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             }
         }
 
-    }
+    };
     $scope.objs = [];
     $scope.parentList = []; //list of parent objects
     $scope.parentList.push($('#main'));
@@ -117,14 +117,26 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         this.cap = cap;
         this.custMove = custMove;
         this.coneType = coneType;
-    }
+    };
+    $scope.checkObjValid = function(obj) {
+        var status = true;
+        var keys = Object.keys(obj); //array of item's keys
+        var keysList = ['x', 'y', 'radWid', 'radWidFull', 'h', 'd', 'par', 'rX', 'rY', 'rZ', 'color', 'idInfo', 'objType', 'cap', 'custMove', 'coneType'];
+        keysList.forEach(function(key) {
+            if (keys.indexOf(key) == -1) {
+                status = false;
+            }
+        });
+        return status;
+    };
     $scope.announceDone = function(frm) {
+        var type='';
         if (frm.objType == 0) {
-            var type = 'cube '
+            type = 'cube ';
         } else if (frm.objType == 1) {
-            var type = 'cylinder '
+            type = 'cylinder ';
         } else {
-            var type = 'cone '
+            type = 'cone ';
         }
         bootbox.dialog({
             message: 'Made ' + type + frm.idInfo + '!',
@@ -134,7 +146,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     label: "Make another!",
                     className: "btn-success",
                     callback: function() {
-
+                        //do we need to/want to clear the form here?
                     }
                 },
                 info: {
@@ -353,7 +365,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 $scope.announceDone(frm);
             }
         } else {
-            bootbox.alert('Objects cannot be orphans! Please choose a parent!')
+            bootbox.alert('Objects cannot be orphans! Please choose a parent!');
         }
         return frm;
     }
@@ -361,15 +373,14 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         //shimmy shim shims
         e.x = e.x || e.clientX;
         e.y = e.y || e.clientY;
-
         if ($scope.moveEm) {
             $('#main').css('transform', 'rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
-            //translateX(20px) rotateY(20deg)
             $('#main3DR').css('transform', 'translateZ(5px) translateX(5px) rotateY(-5deg) rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
             $('#main3DL').css('transform', 'translateZ(5px) translateX(-5px) rotateY(5deg) rotateX(' + e.y + 'deg) rotateZ(' + e.x + 'deg)');
         } else if ($scope.custMoveMode) {
             if ($scope.is3d) {
-
+                //need to put 3d move stuff here
+                loadUnloadFact.custMoveDo3d($scope.objs, e.x, e.y);
             } else {
                 loadUnloadFact.custMoveDo($scope.objs, e.x, e.y);
             }
@@ -393,7 +404,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         });
         kidsToScan.forEach(function(el) {
             $scope.scanForKids(el);
-        })
+        });
     }
     $scope.checkUnUsed = function(item) {
         //prevents two objects from having the same name 
@@ -412,18 +423,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $('#makeButt').attr('disabled', 'true');
             $('#prevButt').attr('disabled', 'true');
         }
-    }
+    };
     $scope.drawTree = function(par) {
         //first one will be main+Tree, or #mainTree. If this is first one, clear it
         var fullParent = par;
         if (par == 'main') {
             fullParent = '#main';
-            if (!$scope.objs.length){
-                $('#mainTree').html('Nothing yet!');    
-            }else {
+            if (!$scope.objs.length) {
+                $('#mainTree').html('Nothing yet!');
+            } else {
                 $('#mainTree').html('');
             }
-            
+
         } else {
             for (var q = 0; q < $scope.objs.length; q++) {
                 if ($scope.objs[q].idInfo == par && $scope.objs[q].objType == 0) {
@@ -495,8 +506,7 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             }
         }
         $scope.drawTree('main');
-
-    }
+    };
     $scope.saveObj = []
     $scope.encodeSave = function() {
         $scope.adding = false;
@@ -553,17 +563,18 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                 }
             });
         } catch (e) {
+            //not a valid code
             bootbox.alert('Huh. This doesn\'t look like a valid scene to me!', function() {
                 $('#loadBox').val('').focus();
             });
         }
-    }
+    };
     $scope.enterLoad = function(e) {
         if (e.keyCode == 13) {
             console.log('loaddecode')
             $scope.loadDecode($('#loadBox').val());
         }
-    }
+    };
     $scope.loadScene = function() {
         //function reloads a scene
         $scope.loadData.forEach(function(loadObj) {
@@ -630,17 +641,14 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         }
     };
     //Thanks to http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion for this!
-
     $scope.updateCol = function(isRgb, isBg) {
         //first we make sure we're dealin with numbahs here, not lettahs
-
         for (var key in $scope.objForm.color) {
             if ($scope.objForm.color.hasOwnProperty(key) && key != 'img' && key != 'rgb') {
                 //convert all vals to number primitives, except for img/rgb
                 $scope.objForm.color[key] = parseFloat($scope.objForm.color[key]);
             }
         }
-
         if (isRgb == 1) {
             if (!isBg) {
                 var cols = loadUnloadFact.rgbToHsl($scope.objForm.color.red, $scope.objForm.color.green, $scope.objForm.color.blue)
@@ -736,7 +744,6 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
         $scope.adding = false;
         $scope.rem = false;
         $scope.saving = false;
-
         //show the following warning if user tries to access non-IE-compliant stuff
         if ($scope.bgShow && !$scope.ackIe && window.navigator.userAgent.indexOf("MSIE ") > 0) {
             bootbox.alert('It looks like you\'re using Internet Explorer! Some features aren\'t available in IE!')
@@ -793,10 +800,10 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
             $scope.moveEm ? $scope.moveEm = false : $scope.moveEm = true;
             $scope.custMoveMode = false;
             $scope.$digest();
-        }else if(e.which==112){
+        } else if (e.which == 112) {
             //help win
             e.preventDefault();
-            $scope.halp?$scope.halp=false:$scope.halp=true;
+            $scope.halp ? $scope.halp = false : $scope.halp = true;
             $scope.$digest();
         } else if (document.activeElement.type != 'text' && document.activeElement.tagName.toLowerCase() != 'textarea') {
             if (e.which == 77) {
@@ -904,8 +911,8 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
                     colArray = colArray.replace(')', '');
                     colArray = colArray.split(', ');
                     var HSLR = loadUnloadFact.rgbToHsl(parseInt(colArray[0]), parseInt(colArray[1]), parseInt(colArray[2]));
-                    console.log('A color in right (red) side is: ',HSLR)
-                    $(toColorR[i]).css('background-color', 'hsl(0,' + HSLR[1] + '%,' + Math.min(100,1.25*HSLR[2]) + '%)');
+                    console.log('A color in right (red) side is: ', HSLR)
+                    $(toColorR[i]).css('background-color', 'hsl(0,' + HSLR[1] + '%,' + Math.min(100, 1.25 * HSLR[2]) + '%)');
                 }
             }
             //recolor all divs L (left, blue):
@@ -937,25 +944,24 @@ app.controller("MainController", function($scope, $window, $compile, loadUnloadF
     //this stuff here will eventually monitor the speed, and alert the user if we're too slow.
     $scope.monitorStart = new Date().getTime();
     $scope.monitorEnd = new Date().getTime();
-    $scope.maxFrameDif=0;
-    $scope.monitor = function(){
+    $scope.maxFrameDif = 0;
+    $scope.monitor = function() {
         window.requestAnimationFrame($scope.monitor)
         $scope.monitorEnd = new Date().getTime();
         var dif = $scope.monitorEnd - $scope.monitorStart;
-        if ($scope.maxFrameDif<dif){
+        if ($scope.maxFrameDif < dif) {
             $scope.maxFrameDif = dif;
-            console.log('Maximum frame time:',dif);
+            console.log('Maximum frame time:', dif);
         }
         $scope.monitorStart = $scope.monitorEnd;
     };
     $scope.monitor();
-    window.onload = function(){
+    window.onload = function() {
         loadUnloadFact.getUrlCode();
     }
-    if (localStorage && !localStorage.daveModeler){
-        bootbox.alert('Hey! Looks like you haven\'t been here before. Press <b>F1</b> for some help, if you get lost!',function(e){
+    if (localStorage && !localStorage.daveModeler) {
+        bootbox.alert('Hey! Looks like you haven\'t been here before. Press <b>F1</b> for some help, if you get lost!', function(e) {
             localStorage.daveModeler = true;
         });
     }
 });
-

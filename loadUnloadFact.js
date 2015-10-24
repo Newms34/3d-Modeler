@@ -38,7 +38,6 @@ app.factory('loadUnloadFact', function($rootScope) {
             //the circle has default color 'color'(an hsl object), and is rotated
             //along rX, rY, and rZ
             //idInfo is any additional info that is passed along as id
-
             //construct parent ele
             var circCont = document.createElement('div');
             circCont.className = 'circleContainer';
@@ -47,7 +46,6 @@ app.factory('loadUnloadFact', function($rootScope) {
             circCont.style.left = x + 'px';
             circCont.style.top = y + 'px';
             $(p).append(circCont);
-
             if (cap.isCapped) {
                 capSegs(2, color, circCont.id, r, cap.pos, h);
             }
@@ -67,7 +65,6 @@ app.factory('loadUnloadFact', function($rootScope) {
                 color.gloPow ? el.style.boxShadow = '0 0 ' + color.gloPow + 'px ' + col : el.style.boxShadow = 'none';
                 $('#' + circCont.id).append(el);
             }
-
             //now rotate parent ele.
             $('#' + circCont.id).css('transform', 'rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) rotateZ(' + rZ + 'deg)');
             return id;
@@ -135,13 +132,11 @@ app.factory('loadUnloadFact', function($rootScope) {
             return id;
         },
         createCone: function(x, y, r, h, d, p, rX, rY, rZ, color, idInfo, cap) {
-
             //this function creates a cone at position x,y
             //with radius r, height h, and parent element with id p.
             //the cone has default color 'color'(an hsl object), and is rotated
             //along rX, rY, and rZ
             //idInfo is any additional info that is passed along as id
-
             //construct parent ele
             var coneCont = document.createElement('div');
             coneCont.className = 'coneContainer';
@@ -160,7 +155,7 @@ app.factory('loadUnloadFact', function($rootScope) {
                 numSegs = r[1];
                 r = r[0];
             }
-            var widthAdj = 2173.8934*Math.pow(numSegs,-3.2333);
+            var widthAdj = 2173.8934 * Math.pow(numSegs, -3.2333);
             for (var i = 0; i < numSegs; i++) {
                 var el = document.createElement('div');
                 el.className = 'conePiece';
@@ -244,7 +239,7 @@ app.factory('loadUnloadFact', function($rootScope) {
         changeTit: function(tit) {
             //change the page title.
             var t = setTimeout(function() {
-                document.title = tit+' - DaveModeler';
+                document.title = tit + ' - DaveModeler';
             }, 1000);
         },
         custMoveDo: function(arr, x, y) {
@@ -287,7 +282,18 @@ app.factory('loadUnloadFact', function($rootScope) {
                 }
             }
         },
-        getUrlCode:function(){
+        custMoveDo3d: function(arr, x, y) {
+            loadUnloadFact.custMove(arr, x, y); //send the main copy to the regular custmove without any modifications
+            for (var l = 0; l < arr.length; l++) {
+                arr[l].idInfo = '3DL' + arr[l].idInfo;
+            }
+            loadUnloadFact.custMove(arr, x, y);
+            for (var r = 0; l < arr.length; l++) {
+                arr[l].idInfo.replace('3DL', '3DR');
+            }
+            loadUnloadFact.custMove(arr, x, y);
+        },
+        getUrlCode: function() {
             /*
             basically, we truncate all the var names to create a shorter obj
             replacement:
@@ -322,13 +328,13 @@ app.factory('loadUnloadFact', function($rootScope) {
             numSegs - ns
             */
             var currUrl = window.location.href;
-            console.log(currUrl.substring(currUrl.indexOf('?')+1));
+            console.log(currUrl.substring(currUrl.indexOf('?') + 1));
         },
-        setUrlCode:function(codeStr){
+        setUrlCode: function(codeStr) {
             var beforeLength = codeStr.length;
-            codeStr = codeStr.replace(/"hue"/gi,'"hu"').replace(/"sat"/gi,'"st"').replace(/"val"/gi,'"vl"').replace(/"color"/gi,'"cl"').replace(/"img"/gi,'"im"').replace(/"red"/gi,'"rd"').replace(/"green"/gi,'"gr"').replace(/"blue"/gi,'"bl"').replace(/"blue"/gi,'"bl"').replace(/"filter"/gi,'"fl"').replace(/"filtAmt"/gi,'"fA"').replace(/"is3d"/gi,'"i3"').replace(/"radWid"/gi,'"rw"').replace(/"par"/gi,'"pa"').replace(/"gloPow"/gi,'"gl"').replace(/"trans"/gi,'"tr"').replace(/"spec"/gi,'"sp"').replace(/"objType"/gi,'"ot"').replace(/"cap"/gi,'"cp"').replace(/"isCapped"/gi,'"ic"').replace(/"custMove"/gi,'"cm"').replace(/"active"/gi,'"ac"').replace(/"coneType"/gi,'"ct"').replace(/"idInfo"/gi,'"id"').replace(/"xCont"/gi,'"xc"').replace(/"yCont"/gi,'"yc"').replace(/"xMag"/gi,'"xm"').replace(/"yMag"/gi,'"ym"').replace(/"type"/gi,'"ty"').replace(/"numSegs"/gi,'"ns"')
-            console.log(codeStr,beforeLength-codeStr.length,codeStr.length);
-            console.log(JSON.parse(codeStr))
+            codeStr = codeStr.replace(/"hue"/gi, '"hu"').replace(/"sat"/gi, '"st"').replace(/"val"/gi, '"vl"').replace(/"color"/gi, '"cl"').replace(/"img"/gi, '"im"').replace(/"red"/gi, '"rd"').replace(/"green"/gi, '"gr"').replace(/"blue"/gi, '"bl"').replace(/"blue"/gi, '"bl"').replace(/"filter"/gi, '"fl"').replace(/"filtAmt"/gi, '"fA"').replace(/"is3d"/gi, '"i3"').replace(/"radWid"/gi, '"rw"').replace(/"par"/gi, '"pa"').replace(/"gloPow"/gi, '"gl"').replace(/"trans"/gi, '"tr"').replace(/"spec"/gi, '"sp"').replace(/"objType"/gi, '"ot"').replace(/"cap"/gi, '"cp"').replace(/"isCapped"/gi, '"ic"').replace(/"custMove"/gi, '"cm"').replace(/"active"/gi, '"ac"').replace(/"coneType"/gi, '"ct"').replace(/"idInfo"/gi, '"id"').replace(/"xCont"/gi, '"xc"').replace(/"yCont"/gi, '"yc"').replace(/"xMag"/gi, '"xm"').replace(/"yMag"/gi, '"ym"').replace(/"type"/gi, '"ty"').replace(/"numSegs"/gi, '"ns"');
+            console.log(codeStr, beforeLength - codeStr.length, codeStr.length);
+            console.log(JSON.parse(codeStr));
         }
     };
 });
